@@ -1,11 +1,13 @@
 const express = require('express');
-const { sendEmailVerificationLink, verifyEmail, registerUser, logoutUser, getAllUsers, loginUser, checkUser, createUserByAdmin, deleteUser } = require('../../controllers/auth_user');
+const { resetPassword, sendPasswordResetEmail, sendEmailVerificationLink, verifyEmail, registerUser, logoutUser, getAllUsers, loginUser, checkUser, createUserByAdmin, deleteUser } = require('../../controllers/auth_user');
 const router = express.Router();
 
 router.post('/user/register', registerUser);
 router.post('/user/createuser', createUserByAdmin);
 router.post('/user/sendemailverificationlink', sendEmailVerificationLink);
 router.get('/user/verifyemail', verifyEmail);
+router.post('/user/sendpasswordresetemail', sendPasswordResetEmail);
+router.post('/user/resetpassword/:userId/:token', resetPassword);
 router.post('/user/login', loginUser);
 router.post('/user/logout', logoutUser);
 router.delete('/user/:userId', deleteUser);

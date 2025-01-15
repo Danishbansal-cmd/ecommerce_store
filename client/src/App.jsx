@@ -13,6 +13,7 @@ import AdminRoutes from './routes/adminRoutes'
 import UserRoutes from './routes/userRoutes'
 import EmailVerification from './pages/email-verification/emailVerification'
 import ResetPasswordView from './pages/reset-password/resetPasswordView'
+import SendResetPasswordEmailForm from './components/reset-password/sendResetPasswordEmailForm'
 import ResetPasswordForm from './components/reset-password/resetPasswordForm'
 
 function App() {
@@ -33,6 +34,8 @@ function App() {
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
+        {/* for home page or main page */}
+        <Route path='' element={<AuthLogin />} />
         <Route path='/login' element={<ProtectedRoutes><AuthForm /></ProtectedRoutes>}>
           <Route path='' element={<AuthLogin />} />
         </Route>
@@ -40,7 +43,10 @@ function App() {
           <Route path='' element={<AuthRegister />} />
         </Route>
         <Route path='/verify-email' element={<EmailVerification />} />
-        <Route path='/reset-password' element={<ResetPasswordView />} >
+        <Route path='/send-reset-password-email' element={<ResetPasswordView />} >
+          <Route path='' element={<SendResetPasswordEmailForm />} />
+        </Route>
+        <Route path='/reset-password/:userId/:token' element={<ResetPasswordView />} >
           <Route path='' element={<ResetPasswordForm />} />
         </Route>
         <Route path='/panel/*' element={<AdminRoutes />} />

@@ -14,16 +14,6 @@ export const registerUser = createAsyncThunk('registerUser', async ({ username, 
   return response.data;
 });
 
-export const sendEmailVerificationLink = createAsyncThunk('sendEmailVerificationLink', async ({email }) => {
-  const response = await axios.post('http://localhost:5000/api/v1/user/sendemailverificationlink', { email });
-  return response.data;
-});
-
-export const verifyEmail = createAsyncThunk('verifyEmail', async ({token}) => {
-  const response = await axios.get('http://localhost:5000/api/v1/user/verifyemail',{params : {token}});
-  return response.data;
-});
-
 export const createUserByAdmin = createAsyncThunk('createUserByAdmin', async (formData) => {
   const response = await axios.post('http://localhost:5000/api/v1/user/createuser', formData);
   return response.data;
@@ -61,6 +51,26 @@ export const deleteUser = createAsyncThunk('deleteUser', async ({userId}) => {
   const response = await axios.delete(`http://localhost:5000/api/v1/user/${userId}`,{
     withCredentials: true,
   });
+  return response.data;
+});
+
+export const sendEmailVerificationLink = createAsyncThunk('sendEmailVerificationLink', async ({email }) => {
+  const response = await axios.post('http://localhost:5000/api/v1/user/sendemailverificationlink', { email });
+  return response.data;
+});
+
+export const verifyEmail = createAsyncThunk('verifyEmail', async ({token}) => {
+  const response = await axios.get('http://localhost:5000/api/v1/user/verifyemail',{params : {token}});
+  return response.data;
+});
+
+export const sendPasswordResetEmail = createAsyncThunk('sendPasswordResetEmail', async ({email}) => {
+  const response = await axios.post('http://localhost:5000/api/v1/user/sendpasswordresetemail',{email});
+  return response.data;
+});
+
+export const resetPassword = createAsyncThunk('resetPassword', async ({userId,token,password}) => {
+  const response = await axios.post(`http://localhost:5000/api/v1/user/resetpassword/${userId}/${token}`,{password});
   return response.data;
 });
 

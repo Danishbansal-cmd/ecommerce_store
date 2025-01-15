@@ -63,7 +63,7 @@ function CommonForm({ formElements, onSubmit, btnText, formData, setFormData, bt
         {haveResetPasswordButton ? 
         <div className='flex items-center justify-start gap-2' >
           <span className='text-xs'>Forgot Password?</span>
-          <Link className='text-xs text-gray-500 cursor-pointer hover:text-[#646cfc]' to='/reset-password'>Reset Password</Link>
+          <Link className='text-xs text-gray-500 cursor-pointer hover:text-[#646cfc]' to='/send-reset-password-email'>Reset Password</Link>
         </div> : 
         null}
 

@@ -3,6 +3,7 @@ const {createTransporterForEmail} = require('../../emailVerification/email')
 const {emailTemplate} = require('../../emailVerification/emailTemplate');
 const jwt = require('jsonwebtoken');
 const User = require('../../models/User');
+const Token = require('../../models/Token');
 const bcrypt = require('bcrypt');
 const Employee = require('../../models/Employee');
 const Roles = require('../../models/Roles');
@@ -279,7 +280,7 @@ const sendEmailVerificationLink = async (req, res) => {
             if(Object.keys(data).length > 0){
                 return res.json({data : data, message : '[Email Verification] Verification Email Sent Successfully', success : true}).status(200);
             }else {
-                return res.json({data : data, message : '[Email Verification] Verification Email Cannot be Sent! Try again Later', success : true}).status(200);
+                return res.json({data : null, message : '[Email Verification] Verification Email Cannot be Sent! Try again Later', success : false}).status(400);
             }
         })
     }catch (error){
@@ -326,5 +327,89 @@ const verifyEmail = async (req, res) => {
     }
 }
 
+const sendPasswordResetEmail = async (req, res) => {
+    try{
+        const { email } = req.body;
 
-module.exports = { loginUser, tokenVerification, verifyEmail, registerUser, checkUser, createUserByAdmin, logoutUser, getAllUsers, deleteUser, sendEmailVerificationLink };
+        // find user associated with this email
+        const findUser = await User.findOne({email});
+
+        // if user not found
+        if(!findUser){
+            return res.json({success : false, message : '[Send Password Reset Email] There is no user associated with this email', data : null});
+        }
+
+        // if user found, create token
+        const token = await new Token({userId : findUser._id,token : jwt.sign({email}, process.env.PASSWORD_SECRET)}).save();
+
+        const resetPasswordLink = `${process.env.BASEURL}/reset-password/${findUser?._id}/${token?.token}`;
+        console.log(resetPasswordLink,'resetPasswordLink');
+
+        //emailOptions - who sends what to whom
+        const sendEmail = async (emailOptions) => {
+            let emailTransporter = await createTransporterForEmail();
+            const response = await emailTransporter.sendMail(emailOptions);
+            return response;
+        };
+
+        sendEmail({
+            subject: "Password Reset",
+            html: emailTemplate(`${resetPasswordLink}`),
+            to: findUser?.email,
+            from: process.env.EMAIL
+        }).then((data) => {
+            console.log(data,'data');
+            if(Object.keys(data).length > 0){
+                return res.json({data : data, message : '[Password Reset Email] Sent Successfully', success : true}).status(200);
+            }else {
+                return res.json({data : null, message : '[Password Reset Email] Some Error Occured! Try again Later', success : false}).status(400);
+            }
+        }).catch((error) => {
+            return res.json({data : error, message : '[Password Reset Email] Some Error Occured! Try again Later', success : false}).status(400);
+        })
+    }catch(error){
+        return res.json({data : null, message : '[Password Reset Email] Some Error Occured! Try again Later', success : false}).status(400);
+    }
+}
+
+const resetPassword = async (req, res) => {
+    try{
+        const {password} = req.body;
+        const {userId, token} = req.params;
+
+        // find user
+        const findUser = await User.findById(userId);
+        if (!findUser) return res.json({message : "[Reset Password] invalid link or expired",data : null, success : false}).status(400);
+
+        console.log(findUser,'findUser')
+        // find the associated token
+        const findToken = await Token.findOne({
+            userId: findUser._id,
+            token: token,
+        });
+        console.log(findToken,'findToken')
+        // if token not found
+        if (!findToken){
+            return res.json({message : "[Reset Password] invalid link or expired",data : null, success : false}).status(400);
+        }
+
+        //hash the password before saving it
+        const hashPassword = await bcrypt.hash(password, 12);
+
+        // update the password and save it
+        findUser.password = hashPassword;
+        await findUser.save();
+
+        // delete the token
+        await findToken.deleteOne(); 
+
+        // returning success
+        return res.json({message : "[Reset Password] Password Reset Successfully",data : null, success : true}).status(200);
+    }catch(error){
+        console.log(error,'backend error');
+        return res.json({data : error, message : '[Reset Password] Some Error Occured! Try again Later', success : false}).status(500);
+    }
+}
+
+
+module.exports = { loginUser, tokenVerification, verifyEmail, resetPassword, sendPasswordResetEmail, registerUser, checkUser, createUserByAdmin, logoutUser, getAllUsers, deleteUser, sendEmailVerificationLink };

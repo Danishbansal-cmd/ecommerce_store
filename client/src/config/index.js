@@ -74,6 +74,11 @@ export const filterOptions = {
     ]
 };
 
-export const passwordResetEmailElements = [
+export const sendResetPasswordEmailElements = [
     { name: 'email', componentType: 'input', label: 'Password Reset Email', placeholder: 'Enter Password Reset Email', inputType: 'email' },
+]
+
+export const resetPasswordElements = [
+    { name: 'password', componentType: 'input', label: 'New Password', placeholder: 'Enter New Password', inputType: 'text' },
+    { name: 'confirmpassword', componentType: 'input', label: 'Confirm Password', placeholder: 'Enter Password Again', inputType: 'text' },
 ]
