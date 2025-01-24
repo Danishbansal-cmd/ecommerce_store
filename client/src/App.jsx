@@ -21,6 +21,7 @@ import ShippingPolicy from './pages/legal/shippingPolicy'
 import PrivacyPolicy from './pages/legal/privacyPolicy'
 import CancellationPolicy from './pages/legal/cancellationPolicy'
 import SentEmailVerificationLink from './components/email-verification/sentEmailVerificationLink'
+import SentResetPasswordEmail from './components/reset-password/sentResetPasswordEmail'
 
 function App() {
 
@@ -52,6 +53,9 @@ function App() {
           <Route path='' element={<SentEmailVerificationLink />} />
         </Route>
         <Route path='/verify-email' element={<EmailVerification />} />
+        <Route path='/sent-reset-password-email' element={<MainForm />} >
+          <Route path='' element={<SentResetPasswordEmail />} />
+        </Route>
         <Route path='/send-reset-password-email' element={<ResetPasswordView />} >
           <Route path='' element={<SendResetPasswordEmailForm />} />
         </Route>

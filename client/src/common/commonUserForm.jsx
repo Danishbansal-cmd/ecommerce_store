@@ -140,11 +140,7 @@ function CommonUserForm({
     <div className="w-full mt-5">
       <form action="" onSubmit={onSubmit}>
         <div
-          className={`flex flex-col 
-      ${customFormHeight || ""}`}
-          style={{
-            height: customFormHeight ? `${customFormHeight}px` : undefined,
-          }}
+          className={`flex flex-col`}
         >
           {formElements.map((item) => (
             <div className="flex flex-col items-start" key={item.name}>
@@ -199,12 +195,18 @@ function CommonUserForm({
         </div>
 
         {/* Submit Button */}
-        <div className="h-32 flex flex-col justify-end">
+        <div
+          className={`flex flex-col justify-end
+      ${customFormHeight || 'h-32'}`}
+          style={{
+            height: customFormHeight ? `${customFormHeight}px` : undefined,
+          }}
+        >
           {/* for error display in red color */}
-          {errors["registerError"] && (
+          {errors["errors"] && (
             <div className="bg-red-100 border-red-500 border-l-4 mb-1 flex items-center pl-2">
               <span className="text-xs text-red-500">
-                {errors["registerError"]}
+                {errors["errors"]}
               </span>
             </div>
           )}

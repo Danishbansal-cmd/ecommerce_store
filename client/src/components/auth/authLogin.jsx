@@ -1,12 +1,11 @@
-import CommonForm from '@/common/commonForm';
 import CommonUserForm from '@/common/commonUserForm';
 import { loginFormElements } from '@/config';
 import { useToast } from '@/hooks/use-toast';
 import { loginUser } from '@/store/authslice';
-import { getAllRoles, getRole } from '@/store/rolesSlice';
+import { getRole } from '@/store/rolesSlice';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const initialState = {
   usernameOrEmail: '',
@@ -21,11 +20,12 @@ function AuthLogin() {
   const dispatch = useDispatch();
   const btnText = 'Login';
   const { toast } = useToast();
-  const navigate = useNavigate();
   const formElements = loginFormElements;
 
   function onSubmit(e) {
     e.preventDefault();
+
+    setErrors({}); // Reset all errors
     // Start the spinner
     setIsSubmitted(true);
 
@@ -48,7 +48,7 @@ function AuthLogin() {
         // Stop the spinner after email verification completes
         setIsSubmitted(false);
       } else if(data?.payload?.success === false) {
-        setErrors((prevErrors) => ({ ...prevErrors, 'registerError': data?.payload?.message }));
+        setErrors((prevErrors) => ({ ...prevErrors, 'errors': data?.payload?.message }));
         setIsSubmitted(false); // Ensure spinner stops even on failure
       }
     }).catch((error) => {

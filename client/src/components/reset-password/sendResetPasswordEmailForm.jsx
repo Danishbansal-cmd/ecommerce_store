@@ -4,7 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { sendPasswordResetEmail } from '@/store/authslice';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const initialState = {
     email : ''
@@ -13,8 +13,10 @@ const initialState = {
 function SendResetPasswordEmailForm() {
     const [formData, setFormData] = useState(initialState);
     const [errors, setErrors] = useState({});
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const dispatch = useDispatch();
     const { toast } = useToast();
+    const navigate = useNavigate();
     const btnText = 'Send Password Reset Email';
 
     function isFormValid() {
@@ -25,27 +27,24 @@ function SendResetPasswordEmailForm() {
         // prevent the default action by the form
         event.preventDefault();
 
+        setErrors({}); // Reset all errors
+        // Start the spinner
+        setIsSubmitted(true);
+
         console.log(formData,'while submitting password reset email formData')
         dispatch(sendPasswordResetEmail(formData)).then((data) => {
             console.log(data,'password reset email data')
             if(data?.payload?.success){
                 setFormData(initialState);
-                toast({
-                    title : data?.payload?.message
-                });
-            }else {
-                toast({
-                    variant : 'destructive',
-                    title : data?.payload?.message
-                });
+                navigate('/sent-reset-password-email');
+            }else if(data?.payload?.success === false){
+                setErrors((prevErrors) => ({ ...prevErrors, 'errors': data?.payload?.message }));
+                setIsSubmitted(false); // Ensure spinner stops even on failure
             }
         })
         .catch((error) => {
             console.log('error while sending data',error)
-            toast({
-                variant : 'destructive',
-                title : error
-            });
+            setIsSubmitted(false); // Ensure spinner stops even on failure
         });
     }
     return (
@@ -56,7 +55,12 @@ function SendResetPasswordEmailForm() {
               <span>Want to Login!  </span>
               <Link to='/login' className='text-gray-500 font-bold'>Login</Link>
             </p>
-            <CommonUserForm formElements={sendResetPasswordEmailElements} errors={errors} setErrors={setErrors} formData={formData} setFormData={setFormData} onSubmit={handleOnsubmit} btnText={btnText} haveResetPasswordButton={false}/>
+            <CommonUserForm formElements={sendResetPasswordEmailElements} 
+            errors={errors} setErrors={setErrors} 
+            formData={formData} setFormData={setFormData} 
+            onSubmit={handleOnsubmit} btnText={btnText} 
+            haveResetPasswordButton={false} isSubmitted={isSubmitted} 
+            customFormHeight={96}/>
           </div>
         </div>)
 };

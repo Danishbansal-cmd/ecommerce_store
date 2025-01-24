@@ -24,6 +24,8 @@ function AuthRegister() {
 
   function onSubmit(e) {
     e.preventDefault();
+
+    setErrors({}); // Reset all errors
     // Start the spinner
     setIsSubmitted(true);
 
@@ -50,7 +52,7 @@ function AuthRegister() {
           setIsSubmitted(false); // Ensure spinner stops even on failure
         });
       } else if(data?.payload?.success === false) {
-        setErrors((prevErrors) => ({ ...prevErrors, 'registerError': data?.payload?.message }));
+        setErrors((prevErrors) => ({ ...prevErrors, 'errors': data?.payload?.message }));
         setIsSubmitted(false); // Ensure spinner stops even on failure
       }
     }).catch((error) => {
