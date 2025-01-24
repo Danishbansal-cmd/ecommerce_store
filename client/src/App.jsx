@@ -3,7 +3,6 @@ import './App.css'
 import { Routes, Route } from 'react-router-dom'
 import AuthLogin from './components/auth/authLogin'
 import AuthRegister from './components/auth/authRegister'
-import AuthForm from './pages/auth/authform'
 import { useDispatch } from 'react-redux'
 import { checkUser } from './store/authslice'
 import NotFound from './pages/not-found/notFound'
@@ -15,6 +14,13 @@ import EmailVerification from './pages/email-verification/emailVerification'
 import ResetPasswordView from './pages/reset-password/resetPasswordView'
 import SendResetPasswordEmailForm from './components/reset-password/sendResetPasswordEmailForm'
 import ResetPasswordForm from './components/reset-password/resetPasswordForm'
+import Home from './pages/frontend-user-view/home'
+import MainForm from './pages/auth/mainform'
+import TermsOfUse from './pages/legal/termsOfUse'
+import ShippingPolicy from './pages/legal/shippingPolicy'
+import PrivacyPolicy from './pages/legal/privacyPolicy'
+import CancellationPolicy from './pages/legal/cancellationPolicy'
+import SentEmailVerificationLink from './components/email-verification/sentEmailVerificationLink'
 
 function App() {
 
@@ -35,12 +41,15 @@ function App() {
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
         {/* for home page or main page */}
-        <Route path='' element={<AuthLogin />} />
-        <Route path='/login' element={<ProtectedRoutes><AuthForm /></ProtectedRoutes>}>
+        <Route path='/' element={<Home />} />
+        <Route path='/login' element={<ProtectedRoutes><MainForm /></ProtectedRoutes>}>
           <Route path='' element={<AuthLogin />} />
         </Route>
-        <Route path='/register' element={<ProtectedRoutes><AuthForm /></ProtectedRoutes>} >
+        <Route path='/register' element={<ProtectedRoutes><MainForm /></ProtectedRoutes>} >
           <Route path='' element={<AuthRegister />} />
+        </Route>
+        <Route path='/sent-email-verification-link' element={<MainForm />} >
+          <Route path='' element={<SentEmailVerificationLink />} />
         </Route>
         <Route path='/verify-email' element={<EmailVerification />} />
         <Route path='/send-reset-password-email' element={<ResetPasswordView />} >
@@ -49,6 +58,10 @@ function App() {
         <Route path='/reset-password/:userId/:token' element={<ResetPasswordView />} >
           <Route path='' element={<ResetPasswordForm />} />
         </Route>
+        <Route path='/terms-of-use' element={<TermsOfUse />} />
+        <Route path='/shipping-policy' element={<ShippingPolicy />} />
+        <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+        <Route path='/cancellation-policy' element={<CancellationPolicy />} />
         <Route path='/panel/*' element={<AdminRoutes />} />
         <Route path='/user/*' element={<UserRoutes />} />
         <Route path='*' element={<ProtectedRoutes><NotFound /></ProtectedRoutes>} />

@@ -1,4 +1,4 @@
-import CommonForm from '@/common/commonForm';
+import CommonUserForm from '@/common/commonUserForm';
 import { sendResetPasswordEmailElements } from '@/config';
 import { useToast } from '@/hooks/use-toast';
 import { sendPasswordResetEmail } from '@/store/authslice';
@@ -12,6 +12,7 @@ const initialState = {
 
 function SendResetPasswordEmailForm() {
     const [formData, setFormData] = useState(initialState);
+    const [errors, setErrors] = useState({});
     const dispatch = useDispatch();
     const { toast } = useToast();
     const btnText = 'Send Password Reset Email';
@@ -48,14 +49,16 @@ function SendResetPasswordEmailForm() {
         });
     }
     return (
-        <div className='flex w-1/2 items-center justify-center px-4 py-12 sm:px-6 lg:px-8'>
-            <div className='flex flex-col items-center min-w-80'>
-                <h2 className='text-black font-extrabold text-2xl'>Send Reset Password Email</h2>
-                <p className='text-black'>Want to Login! <Link to='/login'>Login</Link></p>
-                <CommonForm btnText={btnText} btnDisabled={!isFormValid()} formData={formData} setFormData={setFormData} onSubmit={handleOnsubmit} formElements={sendResetPasswordEmailElements} customFormHeight={80}/>
-            </div>
-        </div>
-    );
+        <div className='flex w-1/2 items-center justify-center sm:px-6 lg:px-8 bg-backgroundMain-light'>
+          <div className='flex flex-col w-88 bg-white px-8 py-4 text-left text-gray-700'>
+            <h2 className='font-bold text-2xl'>Send Reset Password Email</h2>
+            <p className='text-sm text-colorText-light block'>
+              <span>Want to Login!  </span>
+              <Link to='/login' className='text-gray-500 font-bold'>Login</Link>
+            </p>
+            <CommonUserForm formElements={sendResetPasswordEmailElements} errors={errors} setErrors={setErrors} formData={formData} setFormData={setFormData} onSubmit={handleOnsubmit} btnText={btnText} haveResetPasswordButton={false}/>
+          </div>
+        </div>)
 };
 
 export default SendResetPasswordEmailForm;

@@ -12,7 +12,7 @@ const registerUser = async (req, res) => {
     try {
         const { username, email, password } = req.body;
         if (!username || !email || !password) {
-            return res.status(400).json({ success: false, message: '[Register User] Data not provided', data: {} });
+            return res.json({ success: false, message: '[Register User] Data not provided', data: {} }).status(400);
         }
 
         //check for existing user
@@ -31,10 +31,10 @@ const registerUser = async (req, res) => {
         const newUser = await new User({ username, email, password: hashPassword , role : 'frontend_user'}).save();
 
         //respond with success
-        return res.status(201).json({ success: true, message: "[Register User] User added successfully", data: newUser });
+        return res.json({ success: true, message: "[Register User] User added successfully", data: newUser }).status(201);
 
     } catch (error) {
-        res.status(401).json({ success: false, message: "[Register User] Some error occured", data: null })
+        res.json({ success: false, message: "[Register User] Some error occured", data: null }).status(401)
     }
 }
 
@@ -112,7 +112,7 @@ const tokenVerification = async (req, res, next) => {
 const loginUser = async (req, res) => {
     try{
         const { usernameOrEmail, password } = req.body;
-        if (!usernameOrEmail || !password) return res.status(400).json({ success: false, message: '[Login User] Data not provided', data: null });
+        if (!usernameOrEmail || !password) return res.json({ success: false, message: '[Login User] Data not provided', data: null }).status(400);
     
         //check if user does not exists
         const checkUser = await User.findOne({ $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }] });
@@ -154,11 +154,11 @@ const loginUser = async (req, res) => {
             }
         })
     }catch(error){
-        res.status(400).json({
+        res.json({
             success: false,
             message: '[Login User] Some Error Occured',
             data: null
-        })
+        }).status(400)
     }
 
 }

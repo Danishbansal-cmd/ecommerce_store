@@ -1,4 +1,5 @@
 import CommonForm from '@/common/commonForm';
+import CommonUserForm from '@/common/commonUserForm';
 import { resetPasswordElements } from '@/config';
 import { useToast } from '@/hooks/use-toast';
 import { resetPassword } from '@/store/authslice';
@@ -13,6 +14,7 @@ const initialState = {
 
 function ResetPasswordForm() {
     const [formData, setFormData] = useState(initialState);
+    const [errors, setErrors] = useState({});
     const { toast } = useToast();
     const {userId, token} = useParams();
     const btnText = 'Reset Password';
@@ -57,13 +59,12 @@ function ResetPasswordForm() {
     }, [dispatch]);
 
     return (
-        <div className='flex w-1/2 items-center justify-center px-4 py-12 sm:px-6 lg:px-8'>
-            <div className='flex flex-col items-center min-w-80'>
-                <h2 className='text-black font-extrabold text-2xl'>Reset Your Password</h2>
-                <CommonForm btnText={btnText} btnDisabled={!isFormValid()} formData={formData} setFormData={setFormData} onSubmit={handleOnSubmit} formElements={resetPasswordElements} customFormHeight={160} />
-            </div>
-        </div>
-    );
+        <div className='flex w-1/2 items-center justify-center sm:px-6 lg:px-8 bg-backgroundMain-light'>
+          <div className='flex flex-col w-88 bg-white px-8 py-4 text-left text-gray-700'>
+            <h2 className='font-bold text-2xl'>Reset Your Password</h2>
+            <CommonUserForm formElements={resetPasswordElements} errors={errors} setErrors={setErrors} formData={formData} setFormData={setFormData} onSubmit={handleOnSubmit} btnText={btnText} haveResetPasswordButton={false}/>
+          </div>
+        </div>)
 };
 
 export default ResetPasswordForm;

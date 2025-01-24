@@ -20,7 +20,7 @@ import { getAllProduct } from '@/store/productSlice';
 import ProductTile from './product-tile';
 import { Checkbox } from '../ui/checkbox';
 import Filters from './filters';
-import NavigationBar from '@/common/navigation';
+import NavigationBar from '@/components/frontend-user-view/navigation';
 
 const initialState = {
   firstname: '',

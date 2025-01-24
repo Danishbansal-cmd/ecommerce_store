@@ -1,6 +1,6 @@
 import CheckAuth from '@/common/checkAuth';
-import FrontEndUserContent from '@/components/frontend_user_view/frontendusercontent';
-import FrontEndUserPage from '@/pages/frontend_user_view/frontendUserPage';
+import FrontEndUserContent from '@/components/frontend-user-view/frontendusercontent';
+import FrontEndUserPage from '@/pages/frontend-user-view/home';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, Route, Routes } from 'react-router-dom';

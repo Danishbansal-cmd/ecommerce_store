@@ -2,6 +2,8 @@
   width: 100%;
   margin: 0 auto;
   text-align: center;
+  --backgroundMain-light: '#FFEEEE';
+  --colorText-light: '#A27E7E';
 }
 
 .logo {
@@ -38,4 +40,14 @@
 
 .read-the-docs {
   color: #888;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  background-color: transparent !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--backgroundMain-light) inset !important;
+  box-shadow: 0 0 0px 1000px var(--backgroundMain-light) inset !important;
+  -webkit-text-fill-color: var(--colorText-light) !important;
 }
