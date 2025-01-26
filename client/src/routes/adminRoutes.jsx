@@ -1,4 +1,5 @@
 import PanelDashboard from '@/components/panel-view/dashboard';
+import AdminPanelView from '@/pages/admin-view/adminPanelView';
 import PanelView from '@/pages/panel-view/panelView';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -12,9 +13,10 @@ function AdminRoutes() {
         console.log("went here")
         return (
             <Routes>
-                <Route path='/' element={<PanelView />} >
+                {/* <Route path='/' element={<PanelView />} >
                     <Route path="dashboard" element={<PanelDashboard userRole={user?.role} />} />
-                </Route>
+                </Route> */}
+                <Route path='/dashboard' element={<AdminPanelView userRole={user?.role} />} />
             </Routes>
         );
       }else if(isAuthenticated && (user?.role === 'frontend_user')) {

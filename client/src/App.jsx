@@ -66,7 +66,7 @@ function App() {
         <Route path='/shipping-policy' element={<ShippingPolicy />} />
         <Route path='/privacy-policy' element={<PrivacyPolicy />} />
         <Route path='/cancellation-policy' element={<CancellationPolicy />} />
-        <Route path='/panel/*' element={<AdminRoutes />} />
+        <Route path='/admin/*' element={<AdminRoutes />} />
         <Route path='/user/*' element={<UserRoutes />} />
         <Route path='*' element={<ProtectedRoutes><NotFound /></ProtectedRoutes>} />
       </Routes>

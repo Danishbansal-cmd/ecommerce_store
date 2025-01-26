@@ -9,7 +9,7 @@ function ProtectedRoutes({children}) {
     if(isAuthenticated && user?.role === 'frontend_user'){
       return (<Navigate to='/user/dashboard' />);
     }else if(isAuthenticated && (user?.role === 'user' || user?.role === 'admin')){
-      return (<Navigate to='/panel/dashboard' />);
+      return (<Navigate to='/admin/dashboard' />);
     }
 
     if(!isAuthenticated){

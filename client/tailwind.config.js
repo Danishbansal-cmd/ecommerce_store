@@ -86,6 +86,9 @@ export default {
 			boxShadow: {
 				'custom': '0 4px 8px rgba(0, 0, 0, 0.06), 0 -4px 8px rgba(0, 0, 0, 0.06)',
 			},
+			screens: {
+				xs: '320px', // Custom breakpoint for 384px
+			},
 		}
 	},
 	plugins: [tailwindcssAnimate,function ({ addVariant }) {
