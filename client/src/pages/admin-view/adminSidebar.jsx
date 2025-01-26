@@ -3,22 +3,13 @@ import { Link } from "react-router-dom";
 import { FaAngleLeft, FaBars } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { MdOutlineSearch } from "react-icons/md";
-
-const menuItems = [
-  "Dashboard",
-  "Users",
-  "Settings",
-  "Reports",
-  "Notifications",
-  "Support",
-  "Feedback",
-];
+import { adminSidebarElements } from "@/config";
 
 function AdminSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredMenuItems, setFilteredMenuItems] = useState(menuItems);
+  const [filteredMenuItems, setFilteredMenuItems] = useState(adminSidebarElements);
 
   // Debounce search functionality
   const handleSearch = (e) => {
@@ -26,8 +17,8 @@ function AdminSidebar() {
     setSearchTerm(value);
 
     setTimeout(() => {
-      const filteredItems = menuItems.filter((item) =>
-        item.toLowerCase().includes(value.toLowerCase())
+      const filteredItems = adminSidebarElements.filter((item) =>
+        item.name.toLowerCase().includes(value.toLowerCase())
       );
       setFilteredMenuItems(filteredItems);
     }, 1200); // Debounce delay
@@ -131,14 +122,41 @@ function AdminSidebar() {
           </div>
 
           <ul className="w-full">
-            {filteredMenuItems.map((item, index) => (
-              <li
-                key={index}
-                className="hover:text-gray-400 cursor-pointer py-4 border-b border-white md:border-none"
-              >
-                {item}
-              </li>
-            ))}
+          {filteredMenuItems.map((section, index) => (
+          <li key={index} className="mb-6">
+            {/* Optional Heading */}
+            {section.heading && (
+              <div className="text-lg text-left font-bold text-colorText-light uppercase mb-2">
+                {section.heading}
+              </div>
+            )}
+
+            {/* Top-level item */}
+            <div className="flex items-center space-x-2 mb-2">
+              {section.icon && (
+                <span className="text-lg">
+                  {/* {React.createElement(section.icon)} */}
+                  {<section.icon className="text-2xl"/>}
+                </span>
+              )}
+              <span className="font-semibold">{section.name}</span>
+            </div>
+
+            {/* Nested items */}
+            {section.items && (
+              <ul className="pl-6 space-y-2">
+                {section.items.map((item, idx) => (
+                  <li
+                    key={idx}
+                    className="hover:text-gray-400 cursor-pointer text-sm"
+                  >
+                    {item.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
           </ul>
         </div>
       </div>

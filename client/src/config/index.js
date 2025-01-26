@@ -1,5 +1,9 @@
 import { IoPersonCircle } from "react-icons/io5";
 import { MdOutlineKey,MdEmail } from "react-icons/md";
+import { GoHome } from "react-icons/go";
+import { GoGraph } from "react-icons/go";
+import { AiOutlineShoppingCart } from "react-icons/ai";
+
 
 export const loginFormElements = [
     { name: 'usernameOrEmail', componentType: 'input', label: 'Username or Email', placeholder: 'Enter Username or Email', inputType: 'text', iconProperty : IoPersonCircle },
@@ -83,4 +87,28 @@ export const sendResetPasswordEmailElements = [
 export const resetPasswordElements = [
     { name: 'password', componentType: 'input', label: 'New Password', placeholder: 'Enter New Password', inputType: 'password', iconProperty : MdOutlineKey },
     { name: 'confirmpassword', componentType: 'input', label: 'Confirm Password', placeholder: 'Enter Password Again', inputType: 'password', iconProperty : MdOutlineKey },
+]
+
+export const adminSidebarElements = [
+    {
+        name: "Dashboard",
+        icon: GoHome, 
+    },
+    {
+        name: "Point of Sale",
+        icon: GoGraph, 
+    },
+    {
+        heading: "ORDER SECTION",
+        name: "Orders",
+        icon: AiOutlineShoppingCart, 
+        items: [
+          { name: "All" },
+          { name: "Pending" },
+          { name: "Confirmed" },
+          { name: "Delivered" },
+          { name: "Refunded" },
+          { name: "Out for Delivery" },
+        ],
+    },
 ]
