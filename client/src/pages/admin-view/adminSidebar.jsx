@@ -9,7 +9,8 @@ function AdminSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredMenuItems, setFilteredMenuItems] = useState(adminSidebarElements);
+  const [filteredMenuItems, setFilteredMenuItems] =
+    useState(adminSidebarElements);
 
   // Debounce search functionality
   const handleSearch = (e) => {
@@ -17,11 +18,18 @@ function AdminSidebar() {
     setSearchTerm(value);
 
     setTimeout(() => {
-      const filteredItems = adminSidebarElements.filter((item) =>
-        item.name.toLowerCase().includes(value.toLowerCase())
+      const filteredItems = adminSidebarElements.filter((section) => 
+        // Filter through sections with subheading
+        section.subheading.some((subItem) => 
+          subItem.name.toLowerCase().includes(value.toLowerCase()) ||
+          // Filter through items of subheading
+          subItem.items && subItem.items.some(item =>
+            item.name.toLowerCase().includes(value.toLowerCase())
+          )
+        )
       );
       setFilteredMenuItems(filteredItems);
-    }, 1200); // Debounce delay
+    }, 200); //Debounce delay
   };
 
   return (
@@ -79,7 +87,7 @@ function AdminSidebar() {
       <div
         className={`xs:fixed md:relative inset-0 z-50 transition-transform transform duration-300 ease-in-out ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 bg-black md:bg-transparent flex-col flex`}
+        } md:translate-x-0 bg-black md:bg-transparent flex-col flex h-full`}
       >
         {/* Header Bar with Company Logo and Close Button */}
         <div className="h-28 items-center justify-between px-4 bg-black xs:flex md:hidden">
@@ -105,59 +113,90 @@ function AdminSidebar() {
         <div className="border-b border-white xs:block md:hidden"></div>
 
         {/* Menu Content */}
-        <div className="flex flex-col items-start space-y-0 px-2 pt-4 text-white">
+        <div
+          className="flex flex-col items-start space-y-0 
+        px-2 text-white
+        overflow-y-scroll 
+          max-h-[calc(100vh-112px)]
+          [&::-webkit-scrollbar-track]:rounded-full 
+      [&::-webkit-scrollbar-thumb]:rounded-full 
+      [&::-webkit-scrollbar]:w-0.5 
+      [&::-webkit-scrollbar-track]:bg-transparent 
+      [&::-webkit-scrollbar-thumb]:bg-gray-200"
+        >
           {/* Search Input */}
-          <div className="relative w-full mb-4">
-            {/* Search Icon */}
-            <MdOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-3xl" />
-            <input
-              type="text"
-              placeholder="Search for Sections..."
-              value={searchTerm}
-              onChange={handleSearch}
-              className="w-full pl-12 py-3 border border-white text-white 
+          <div className="w-full bg-colorSecondary-light sticky top-0 z-10 py-2 pt-4">
+            <div className="relative w-full max-w-4xl mx-auto">
+              {/* Search Icon */}
+              <MdOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-3xl" />
+              <input
+                type="text"
+                placeholder="Search for Sections..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="w-full pl-12 h-12 border border-white text-white 
               placeholder-gray-400 bg-transparent focus:outline-none
               placeholder:text-white"
-            />
+              />
+            </div>
           </div>
 
-          <ul className="w-full">
-          {filteredMenuItems.map((section, index) => (
-          <li key={index} className="mb-6">
-            {/* Optional Heading */}
-            {section.heading && (
-              <div className="text-lg text-left font-bold text-colorText-light uppercase mb-2">
-                {section.heading}
-              </div>
-            )}
+          <div className="w-full">
+            <ul className="w-full">
+              {filteredMenuItems.map((section, index) => (
+                <li key={index}>
+                  {/* Optional Heading */}
+                  {section.heading && (
+                    <div
+                      className="text-lg text-left font-bold 
+              text-colorText-light uppercase h-12 pl-4 
+              flex items-center mt-2"
+                    >
+                      {section.heading}
+                    </div>
+                  )}
 
-            {/* Top-level item */}
-            <div className="flex items-center space-x-2 mb-2">
-              {section.icon && (
-                <span className="text-lg">
-                  {/* {React.createElement(section.icon)} */}
-                  {<section.icon className="text-2xl"/>}
-                </span>
-              )}
-              <span className="font-semibold">{section.name}</span>
-            </div>
+                  {/* Subheadings */}
+                  {section.subheading &&
+                    section.subheading.map((sub, idx) => (
+                      <div key={idx}>
+                        {/* Top-level item */}
+                        <div className="flex items-center space-x-2 h-12 pl-4">
+                          {sub.icon && (
+                            <span className="text-lg">
+                              {<sub.icon className="text-2xl" />}
+                            </span>
+                          )}
+                          <span className="font-semibold">{sub.name}</span>
+                        </div>
 
-            {/* Nested items */}
-            {section.items && (
-              <ul className="pl-6 space-y-2">
-                {section.items.map((item, idx) => (
-                  <li
-                    key={idx}
-                    className="hover:text-gray-400 cursor-pointer text-sm"
-                  >
-                    {item.name}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-          </ul>
+                        {/* Nested items */}
+                        {sub.items && (
+                          <ul className="pl-12">
+                            {sub.items.map((item, itemIdx) => (
+                              <li
+                                key={itemIdx}
+                                className="h-12 font-bold flex items-center justify-between hover:text-gray-400 cursor-pointer text-sm pr-4"
+                              >
+                                {/* Disc and Name */}
+                                <div className="flex items-center space-x-2">
+                                  <span className="w-1.5 h-1.5 bg-white rounded-full"></span>{" "}
+                                  {/* Disc */}
+                                  <span>{item.name}</span> {/* Item Name */}
+                                </div>
+
+                                {/* Dash */}
+                                <span className="text-white font-bold">-</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    ))}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

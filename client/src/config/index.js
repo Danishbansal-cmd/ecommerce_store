@@ -3,6 +3,14 @@ import { MdOutlineKey,MdEmail } from "react-icons/md";
 import { GoHome } from "react-icons/go";
 import { GoGraph } from "react-icons/go";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import { BsBox } from "react-icons/bs";
+import { AiFillMerge } from "react-icons/ai";
+import { FaRegImage } from "react-icons/fa";
+import { RiCoupon2Line } from "react-icons/ri";
+import { BsChatLeftQuote } from "react-icons/bs";
+import { TbStars } from "react-icons/tb";
+import { GoBell } from "react-icons/go";
+import { GoPersonAdd } from "react-icons/go";
 
 
 export const loginFormElements = [
@@ -91,24 +99,107 @@ export const resetPasswordElements = [
 
 export const adminSidebarElements = [
     {
-        name: "Dashboard",
-        icon: GoHome, 
+        subheading: [
+            {
+                name: "Dashboard",
+                icon: GoHome, 
+            }
+        ]
     },
     {
-        name: "Point of Sale",
-        icon: GoGraph, 
+        subheading: [
+            {
+                name: "Point of Sale",
+                icon: GoGraph, 
+            }
+        ]
+    },
+    {
+        heading: "ITEMS MANAGEMENT",
+        subheading: [
+            {
+                name: "Items",
+                icon: BsBox, 
+                items: [
+                    { name: "Add New" },
+                    { name: "List" },
+                    { name: "Bulk Import" },
+                    { name: "Bulk Export" },
+                ],
+            },
+            {
+                name: "Categories",
+                icon: AiFillMerge, 
+                items: [
+                    { name: "Category" },
+                    { name: "Sub Category" },
+                    { name: "Create Category" },
+                ],
+            }
+        ]
     },
     {
         heading: "ORDER SECTION",
-        name: "Orders",
-        icon: AiOutlineShoppingCart, 
-        items: [
-          { name: "All" },
-          { name: "Pending" },
-          { name: "Confirmed" },
-          { name: "Delivered" },
-          { name: "Refunded" },
-          { name: "Out for Delivery" },
-        ],
+        subheading: [
+            {
+                name: "Orders",
+                icon: AiOutlineShoppingCart, 
+                items: [
+                { name: "All" },
+                { name: "Pending" },
+                { name: "Confirmed" },
+                { name: "Delivered" },
+                { name: "Refunded" },
+                { name: "Out for Delivery" },
+                ],
+            }
+        ]
+    },
+    {
+        heading: "MARKETING SECTION",
+        subheading: [
+            {
+                name: "Banners",
+                icon: FaRegImage, 
+            },
+            {
+                name: "Coupons",
+                icon: RiCoupon2Line, 
+            }
+        ]
+    },
+    {
+        heading: "BUSINESS SECTION",
+        subheading: [
+            {
+                name: "Notifications",
+                icon: GoBell, 
+            },
+            {
+                name: "Reviews",
+                icon: TbStars, 
+            },
+            {
+                name: "Chat",
+                icon: BsChatLeftQuote, 
+            },
+        ]
+    },
+    {
+        heading: "EMPLOYEE SECTION",
+        subheading: [
+            {
+                name: "Employees",
+                icon: BsBox, 
+                items: [
+                { name: "Add New" },
+                { name: "List" },
+                ],
+            },
+            {
+                name: "Employee Role",
+                icon: GoPersonAdd, 
+            }
+        ]
     },
 ]
