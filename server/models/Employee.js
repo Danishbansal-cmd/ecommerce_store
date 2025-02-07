@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { STATUS_ENUM } = require('../../shared/constants');
 
 const employee = mongoose.Schema({
     firstname : {
@@ -29,7 +28,7 @@ const employee = mongoose.Schema({
     },
     status : { 
         type : String,
-        enum : STATUS_ENUM,
+        enum : ['active', 'passive', 'on_leave'],
         default : 'active'
     },
     userId : {

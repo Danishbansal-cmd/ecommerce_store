@@ -3,7 +3,7 @@ import './App.css'
 import { Routes, Route } from 'react-router-dom'
 import AuthLogin from './components/auth/authLogin'
 import AuthRegister from './components/auth/authRegister'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { checkUser } from './store/authslice'
 import NotFound from './pages/not-found/notFound'
 import { getRole } from './store/rolesSlice'
@@ -22,10 +22,12 @@ import PrivacyPolicy from './pages/legal/privacyPolicy'
 import CancellationPolicy from './pages/legal/cancellationPolicy'
 import SentEmailVerificationLink from './components/email-verification/sentEmailVerificationLink'
 import SentResetPasswordEmail from './components/reset-password/sentResetPasswordEmail'
+import LoadingScreen from './common/loadingScreen'
 
 function App() {
 
   const dispatch = useDispatch();
+  const { isLoading } = useSelector(state => state.auth);
 
   useEffect(() => {
     dispatch(checkUser()).then((data) => {
@@ -38,11 +40,15 @@ function App() {
     });
   }, [dispatch])
 
+  if(isLoading){
+    return <LoadingScreen />
+  }
+
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
         {/* for home page or main page */}
-        <Route path='/' element={<Home />} />
+        <Route path='/' element={<ProtectedRoutes><Home /></ProtectedRoutes>} />
         <Route path='/login' element={<ProtectedRoutes><MainForm /></ProtectedRoutes>}>
           <Route path='' element={<AuthLogin />} />
         </Route>
