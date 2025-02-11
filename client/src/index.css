@@ -137,7 +137,7 @@ button:focus-visible {
 }
 
 
-@keyframes shimmer {
+@keyframes loading_animation {
   0% {
     transform: translateX(-100%);
   }
@@ -162,5 +162,5 @@ button:focus-visible {
   height: 100%;
   width: 100%;
   background: linear-gradient(to right, #e0e0e0 0%, #f0f0f0 50%, #e0e0e0 100%);
-  animation: shimmer 1.5s infinite linear;
+  animation: loading_animation 1.5s infinite linear;
 }
