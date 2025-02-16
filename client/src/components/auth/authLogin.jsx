@@ -4,7 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { loginUser } from '@/store/authslice';
 import { getRole } from '@/store/rolesSlice';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 const initialState = {
@@ -21,40 +21,37 @@ function AuthLogin() {
   const btnText = 'Login';
   const { toast } = useToast();
   const formElements = loginFormElements;
+  const { isLoading } = useSelector(state => state.auth); // ✅ Get isLoading state
 
   function onSubmit(e) {
     e.preventDefault();
 
     setErrors({}); // Reset all errors
-    // Start the spinner
-    setIsSubmitted(true);
+    setIsSubmitted(true); // Start the spinner
 
     dispatch(loginUser(formData)).then((data) => {
-      console.log(data, 'loginUser data login')
+      console.log(data, "loginUser data login");
+    
       if (data?.payload?.success) {
-        // get the specific role and permissions
-        // associated to it
-        // stored in redux(specificRole)
+        console.log('come here')
         dispatch(getRole({ role: data?.payload?.data.role }))
-        .catch((error) => {
-          console.error('Error during get role:', error);
-          setIsSubmitted(false); // Ensure spinner stops even on failure
-        })
+          .catch((error) => {
+            console.error("Error during get role:", error);
+          });
+    
         setFormData(initialState);
-        toast({
-          title: data?.payload?.message
-        });
-
-        // Stop the spinner after email verification completes
-        setIsSubmitted(false);
-      } else if(data?.payload?.success === false) {
-        setErrors((prevErrors) => ({ ...prevErrors, 'errors': data?.payload?.message }));
-        setIsSubmitted(false); // Ensure spinner stops even on failure
+        toast({ title: data?.payload?.message });
+      } else {
+        console.log("Login Error Payload:", data?.payload?.message); // ✅ Debugging
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          errors: data?.payload?.message || "Something went wrong",
+        }));
+        setIsSubmitted(false); // Stop spinner after success or failure
       }
     }).catch((error) => {
-      console.error('Error during login:', error);
-      setIsSubmitted(false); // Ensure spinner stops even on failure
-    })
+      console.error("Error during login:", error);
+    });
   }
 
   return (
@@ -72,7 +69,8 @@ function AuthLogin() {
         onSubmit={onSubmit} btnText={btnText} 
         haveResetPasswordButton={true} 
         showPolicySection={true}
-        isSubmitted={isSubmitted}/>
+        isSubmitted={isSubmitted || isLoading} // ✅ Keep form disabled while loading
+        />
       </div>
     </div>)
 };

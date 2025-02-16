@@ -9,7 +9,7 @@ const orderSchema = new mongoose.Schema(
     },
     items: [
       {
-        product: {
+        item: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Item", // Reference to Item model
           required: true,
@@ -52,6 +52,7 @@ const orderSchema = new mongoose.Schema(
       state: { type: String, required: true },
       country: { type: String, required: true },
       postalCode: { type: String, required: true },
+      addressType: { type: String,enum: ["Home", "Office", "Billing", "Shipping"],default: "Home",},
     },
     orderStatus: {
       type: String,

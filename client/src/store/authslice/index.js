@@ -18,14 +18,30 @@ export const createUserByAdmin = createAsyncThunk('createUserByAdmin', async (fo
   return response.data;
 });
 
-export const loginUser = createAsyncThunk('loginUser', async ({ usernameOrEmail, password }) => {
-  const response = await axiosInstance.post('/user/login', { usernameOrEmail, password }, {
-    withCredentials: true,
-  });
-  return response.data;
-});
+export const loginUser = createAsyncThunk(
+  "loginUser",
+  async ({ usernameOrEmail, password }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        "/user/login",
+        { usernameOrEmail, password },
+        {
+          withCredentials: true,
+          validateStatus: () => true, // ✅ This ensures Axios does NOT throw an error for 400 responses
+        }
+      );
 
-export const logoutUser = createAsyncThunk('loginUser', async () => {
+      return (response.status === 200) ? response.data : rejectWithValue(response.data || { message: "Unknown error occurred" }); 
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Network error, please try again." }
+      );
+    }
+  }
+);
+
+
+export const logoutUser = createAsyncThunk('logoutUser', async () => {
   const response = await axiosInstance.post('/user/logout', {}, {
     withCredentials: true,
   });

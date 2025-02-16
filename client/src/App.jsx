@@ -27,7 +27,6 @@ import LoadingScreen from './common/loadingScreen'
 function App() {
 
   const dispatch = useDispatch();
-  const { isLoading } = useSelector(state => state.auth);
 
   useEffect(() => {
     dispatch(checkUser()).then((data) => {
@@ -39,10 +38,6 @@ function App() {
       }
     });
   }, [dispatch])
-
-  if(isLoading){
-    return <LoadingScreen />
-  }
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">

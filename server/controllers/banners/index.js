@@ -10,7 +10,7 @@ exports.addBanner = async (req, res) => {
     const file = req.file; // Image file uploaded
 
     if (!file) {
-      return res.status(400).json({ success: false, message: "Banner image is required" });
+      return res.status(400).json({ success: false, message: "[Banner] Banner image is required", data : null });
     }
 
     // Upload image to Cloudinary
@@ -32,25 +32,24 @@ exports.addBanner = async (req, res) => {
     });
 
     await newBanner.save();
-    res.status(201).json({ success: true, message: "Banner added successfully", data: newBanner });
+    res.status(201).json({ success: true, message: "[Banner] Banner added successfully", data: newBanner });
 
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: `[Banner] ${error.message}`, data : null });
   }
 };
 
 // ✅ 2. Get All Banners (Filtered by Status)
-// ❌❌❌ needs to review this 
 exports.getBanners = async (req, res) => {
   try {
     const { isActive } = req.query;
     const query = isActive !== undefined ? { isActive } : {}; // Filter by active/inactive banners
     const banners = await Banner.find(query).sort({ createdAt: -1 });
 
-    res.json({ success: true, data: banners, message : "[Banner] Retreived all Banners Successfully" }).status(200);
+    res.status(200).json({ success: true, data: banners, message : "[Banner] Retrieved all Banners Successfully" });
 
   } catch (error) {
-    res.json({ success: false, message: `[Banner] ${error.message}`, data : null }).status(500);
+    res.status(500).json({ success: false, message: `[Banner] ${error.message}`, data : null });
   }
 };
 
@@ -64,7 +63,7 @@ exports.updateBanner = async (req, res) => {
 
     let banner = await Banner.findById(bannerId);
     if (!banner) {
-      return res.status(404).json({ success: false, message: "Banner not found" });
+      return res.status(404).json({ success: false, message: "[Banner] Banner not found" });
     }
 
     // If a new image is uploaded, delete the old one and upload the new one
@@ -82,22 +81,21 @@ exports.updateBanner = async (req, res) => {
     banner.isActive = isActive !== undefined ? isActive : banner.isActive;
 
     await banner.save();
-    res.status(200).json({ success: true, message: "Banner updated successfully", data: banner });
+    res.status(200).json({ success: true, message: "[Banner] Banner updated successfully", data: banner });
 
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: `[Banner] ${error.message}`, data : null });
   }
 };
 
 // ✅ 4. Delete a Banner
-// ❌❌❌ needs to review this 
 exports.deleteBanner = async (req, res) => {
   try {
     const { bannerId } = req.params;
 
     const banner = await Banner.findById(bannerId);
     if (!banner) {
-      return res.json({ success: false, message: "[Banner] Banner not found", data : null}).status(404);
+      return res.status(404).json({ success: false, message: "[Banner] Banner not found", data : null});
     }
 
     // Delete image from Cloudinary
@@ -105,9 +103,9 @@ exports.deleteBanner = async (req, res) => {
 
     // Delete banner from database
     await banner.deleteOne();
-    res.json({ success: true, message: "[Banner] Banner deleted successfully", data : null }).status(200);
-
+    res.status(200).json({ success: true, message: "[Banner] Banner deleted successfully", data : null });
   } catch (error) {
-    res.json({ success: false, message: `[Banner] ${error.message}`, data : null }).status(500);
+    res.status(500).json({ success: false, message: `[Banner] ${error.message}`, data : null });
   }
 };
+

@@ -1,5 +1,5 @@
 const express = require('express');
-const { addRole, getRole, deleteRole, updateRolePermissions, getAllRole } = require('../../controllers/manage_roles');
+const { addRole, getRole, deleteRole, updateRolePermissions, getAllRole } = require('../../controllers/roles');
 const { tokenVerification } = require('../../controllers/auth_user');
 const router = express.Router()
 

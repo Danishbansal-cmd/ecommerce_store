@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAllDepartments } = require('../../controllers/manage_departments');
+const { getAllDepartments } = require('../../controllers/departments');
 const { tokenVerification } = require('../../controllers/auth_user');
 const router = express.Router();
 

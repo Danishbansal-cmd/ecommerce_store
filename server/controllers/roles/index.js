@@ -42,7 +42,6 @@ const deleteRole = async (req, res) => {
     }
 }
 
-
 const getRole = async (req, res) => {
     try{
         //get the role from the body
@@ -101,7 +100,6 @@ const updateRolePermissions = async (req, res) => {
         })
     }
 }
-
 
 module.exports = {addRole, deleteRole, updateRolePermissions, getRole, getAllRole};
 

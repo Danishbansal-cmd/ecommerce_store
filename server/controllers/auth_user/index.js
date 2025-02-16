@@ -12,19 +12,15 @@ const registerUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
-      return res
-        .json({
-          success: false,
-          message: "[Register User] Data not provided",
+      return res.status(400).json({success: false, message: "[Register User] Data not provided",
           data: {},
-        })
-        .status(400);
+        });
     }
 
     //check for existing user
     const checkUser = await User.findOne({ $or: [{ username }, { email }] });
     if (checkUser)
-      return res.json({
+      return res.status(400).json({
         success: false,
         message:
           "[Register User] User already exists with the same email or username! Please try again",
@@ -44,20 +40,19 @@ const registerUser = async (req, res) => {
 
     //respond with success
     return res
+      .status(201)
       .json({
         success: true,
         message: "[Register User] User added successfully",
         data: newUser,
-      })
-      .status(201);
+      });
   } catch (error) {
-    res
+    res.status(401)
       .json({
         success: false,
         message: "[Register User] Some error occured",
         data: null,
-      })
-      .status(401);
+      });
   }
 };
 
@@ -65,7 +60,7 @@ const createUserByAdmin = async (req, res) => {
   try {
     const { username, email, password, roleId } = req.body;
     if (!username || !email || !password || !roleId) {
-      return res.json({
+      return res.status(400).json({
         success: false,
         message: "[Create User] Data not provided",
         data: null,
@@ -75,7 +70,7 @@ const createUserByAdmin = async (req, res) => {
     //check for existing user
     const checkUser = await User.findOne({ $or: [{ username }, { email }] });
     if (checkUser)
-      return res.json({
+      return res.status(400).json({
         success: false,
         message:
           "[Create User] User already exists with the same email or username! Please try again",
@@ -85,7 +80,7 @@ const createUserByAdmin = async (req, res) => {
     //get the specific role
     const getRole = await Roles.findOne({ _id: roleId });
     if (!getRole)
-      return res.json({
+      return res.status(400).json({
         success: false,
         message: "[Create User] Role does not exists! Please try again",
         data: null,
@@ -119,7 +114,7 @@ const createUserByAdmin = async (req, res) => {
       !departmentId ||
       !status
     )
-      return res.json({
+      return res.status(400).json({
         success: false,
         message: "[Add Employee] Data not provided",
         data: {},
@@ -173,7 +168,7 @@ const tokenVerification = async (req, res, next) => {
       console.log("[DEBUG] Token received:", token);
   
       if (!token) {
-        return res.json({ success: false, message: "[Check Token] No token provided" }).status(401);
+        return res.status(401).json({ success: false, message: "[Check Token] No token provided" });
       }
   
       // Verify the token
@@ -185,7 +180,7 @@ const tokenVerification = async (req, res, next) => {
       // Check if the user still exists in the database
       const userExists = await User.findById(verified.id);
       if (!userExists) {
-        return res.json({ success: false, message: "[Check Token] User does not exist" }).status(403);
+        return res.status(403).json({ success: false, message: "[Check Token] User does not exist" });
       }
   
       // Attach verified user info to request
@@ -193,48 +188,48 @@ const tokenVerification = async (req, res, next) => {
       next();
     } catch (error) {
       console.error("[ERROR] Token Verification Failed:", error.message);
-      return res.json({ success: false, message: "[Check Token] Invalid or expired token", error: error.message }).status(403);
+      return res.status(403).json({ success: false, message: "[Check Token] Invalid or expired token", error: error.message });
     }
 };  
 
 const loginUser = async (req, res) => {
+  console.log("Received Body:", req.body);
   try {
     const { usernameOrEmail, password } = req.body;
-    if (!usernameOrEmail || !password)
-      return res
-        .json({
-          success: false,
-          message: "[Login User] Data not provided",
-          data: null,
-        })
-        .status(400);
 
-    //check if user does not exists
+    // Validate input
+    if (!usernameOrEmail || !password) {
+      return res.status(400).json({ // Step 2: Send JSON response
+        success: false,
+        message: "[Login User] Data not provided",
+        data: null,
+      });
+    }
+
+    // Check if user exists
     const checkUser = await User.findOne({
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
     });
+
     if (!checkUser) {
-      return res.json({
+      return res.status(400).json({
         success: false,
         message: "[Login User] User does not exist",
         data: null,
       });
     }
 
-    //check if password is correct
-    const checkPasswordMatch = await bcrypt.compare(
-      password,
-      checkUser.password
-    );
+    // Check if password is correct
+    const checkPasswordMatch = await bcrypt.compare(password, checkUser.password);
     if (!checkPasswordMatch) {
-      return res.json({
+      return res.status(400).json({
         success: false,
         message: "[Login User] Incorrect password! Please try again",
         data: null,
       });
     }
 
-    //create token for the user
+    // Create token
     const tokenData = jwt.sign(
       {
         id: checkUser._id,
@@ -246,37 +241,39 @@ const loginUser = async (req, res) => {
       { expiresIn: "300m" }
     );
 
-    //on successull login
+    // Set cookie and return response
     res.cookie("token", tokenData, {
-        httpOnly: true,  // Prevents JavaScript access (protects against XSS attacks)
-        secure: false,    // Only send over HTTPS (set to false for localhost testing)
-        maxAge: 60 * 60 * 1000, // Token expiry in milliseconds (5 hours)
-      }).status(200)
-      .json({
-        success: true,
-        message: "[Login User] Logged in successfully",
-        data: {
-          id: checkUser._id,
-          role: checkUser.role,
-          email: checkUser.email,
-          username: checkUser.username,
-          token: tokenData
-        },
-      });
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Secure only in production
+      maxAge: 60 * 60 * 1000, // 1 hour expiry
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "[Login User] Logged in successfully",
+      data: {
+        id: checkUser._id,
+        role: checkUser.role,
+        email: checkUser.email,
+        username: checkUser.username,
+        token: tokenData,
+      },
+    });
+
   } catch (error) {
-    res
-      .json({
-        success: false,
-        message: "[Login User] Some Error Occured",
-        data: null,
-      })
-      .status(400);
+    console.error("Login Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "[Login User] Internal Server Error",
+      data: null,
+    });
   }
 };
 
+
 const logoutUser = async (req, res) => {
   try {
-    res.json({
+    res.status(200).json({
       success: true,
       data: null,
       message: "[Logout User] Logged Out Successfully",
@@ -294,7 +291,7 @@ const getAllUsers = async (req, res) => {
   try {
     const allUsers = await User.find();
     if (!allUsers)
-      return res.json({
+      return res.status(403).json({
         success: false,
         data: null,
         message: "[Get All Users] Not Successfull",
@@ -320,7 +317,7 @@ const deleteUser = async (req, res) => {
     console.log(userId, "userId");
     const deleteUser = await User.findOneAndDelete({ _id: userId });
     if (!deleteUser)
-      return res.json({
+      return res.status(400).json({
         success: false,
         data: null,
         message: "[Delete User] Does not Exist",
@@ -375,32 +372,32 @@ const sendEmailVerificationLink = async (req, res) => {
       console.log(data, "data");
       if (Object.keys(data).length > 0) {
         return res
+        .status(200)
           .json({
             data: data,
             message:
               "[Email Verification] Verification Email Sent Successfully",
             success: true,
-          })
-          .status(200);
+          });
       } else {
         return res
+        .status(400)
           .json({
             data: null,
             message:
               "[Email Verification] Verification Email Cannot be Sent! Try again Later",
             success: false,
-          })
-          .status(400);
+          });
       }
     });
   } catch (error) {
     res
+      .status(200)
       .json({
         data: error,
         message: "[Email Verification] Some Error occured",
         success: false,
-      })
-      .status(200);
+      });
   }
 };
 
@@ -414,12 +411,12 @@ const verifyEmail = async (req, res) => {
     // if it fails to verify the token and it is empty
     if (!verifyTokenData) {
       return res
+      .status(400)
         .json({
           success: false,
           message: "[Verify Email] Invalid token",
           data: null,
-        })
-        .status(400);
+        });
 
       // if the token is not empty and data is being sent into the token
     } else {
@@ -432,23 +429,23 @@ const verifyEmail = async (req, res) => {
       // chech if user is not in database
       if (!findUserVerified) {
         return res
+        .status(400)
           .json({
             success: false,
             message: "[Verify Email] User is not in Database",
             data: null,
-          })
-          .status(400);
+          });
       }
 
       // if user is already verified
       if (findUserVerified["verified"] === "verified") {
         return res
+          .status(200)
           .json({
             success: true,
             message: "[Verify Email] Email is Already Verified",
             data: findUserVerified,
-          })
-          .status(200);
+          });
       }
 
       // find user associated with this email and update
@@ -459,21 +456,21 @@ const verifyEmail = async (req, res) => {
       );
 
       return res
+      .status(200)
         .json({
           success: true,
           message: "[Verify Email] Email Verified Successfully",
           data: findUserAndUpdate,
-        })
-        .status(200);
+        });
     }
   } catch (error) {
     return res
+      .status(400)
       .json({
         success: false,
         message: "[Verify Email] Token Invalid or Some Error Occured",
         data: null,
-      })
-      .status(400);
+      });
   }
 };
 
@@ -486,7 +483,7 @@ const sendPasswordResetEmail = async (req, res) => {
 
     // if user not found
     if (!findUser) {
-      return res.json({
+      return res.status(400).json({
         success: false,
         message:
           "[Send Password Reset Email] There is no user associated with this email",
@@ -520,41 +517,41 @@ const sendPasswordResetEmail = async (req, res) => {
         console.log(data, "data");
         if (Object.keys(data).length > 0) {
           return res
+          .status(200)
             .json({
               data: data,
               message: "[Password Reset Email] Sent Successfully",
               success: true,
-            })
-            .status(200);
+            });
         } else {
           return res
+          .status(400)
             .json({
               data: null,
               message:
                 "[Password Reset Email] Some Error Occured! Try again Later",
               success: false,
-            })
-            .status(400);
+            });
         }
       })
       .catch((error) => {
         return res
+          .status(400)
           .json({
             data: error,
             message:
               "[Password Reset Email] Some Error Occured! Try again Later",
             success: false,
-          })
-          .status(400);
+          });
       });
   } catch (error) {
     return res
+      .status(400)
       .json({
         data: null,
         message: "[Password Reset Email] Some Error Occured! Try again Later",
         success: false,
-      })
-      .status(400);
+      });
   }
 };
 
@@ -567,12 +564,12 @@ const resetPassword = async (req, res) => {
     const findUser = await User.findById(userId);
     if (!findUser)
       return res
+      .status(400)
         .json({
           message: "[Reset Password] invalid link or expired",
           data: null,
           success: false,
-        })
-        .status(400);
+        });
 
     console.log(findUser, "findUser");
     // find the associated token
@@ -584,12 +581,12 @@ const resetPassword = async (req, res) => {
     // if token not found
     if (!findToken) {
       return res
+        .status(400)
         .json({
           message: "[Reset Password] invalid link or expired",
           data: null,
           success: false,
-        })
-        .status(400);
+        });
     }
 
     //hash the password before saving it
@@ -604,21 +601,21 @@ const resetPassword = async (req, res) => {
 
     // returning success
     return res
+      .status(200)
       .json({
         message: "[Reset Password] Password Reset Successfully",
         data: null,
         success: true,
-      })
-      .status(200);
+      });
   } catch (error) {
     console.log(error, "backend error");
     return res
+    .status(500)
       .json({
         data: error,
         message: "[Reset Password] Some Error Occured! Try again Later",
         success: false,
-      })
-      .status(500);
+      });
   }
 };
 

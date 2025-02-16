@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -6,7 +7,6 @@ const rolesRoutes = require('./routes/rolesRoutes')
 const departmentRoutes = require('./routes/departmentRoutes')
 const productRoutes = require('./routes/productRoutes')
 
-require('dotenv').config();
 const cookieParser = require('cookie-parser')
 
 //create a connection with the mongoose db
@@ -31,11 +31,14 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // Parses form data
 app.use(cookieParser());
 
 app.get('/', (req, res) => {
     res.send('Hel xpress');
 })
+
+
 
 app.use('/api/v1', authRoutes)
 app.use('/api/v1', rolesRoutes)

@@ -10,7 +10,7 @@ const wishlistSchema = new mongoose.Schema(
     },
     items: [
       {
-        product: {
+        item: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Item",
           required: true,
@@ -24,9 +24,6 @@ const wishlistSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-// 🔹 Ensure each user can add a product only once to their wishlist
-wishlistSchema.index({ user: 1, "items.product": 1 }, { unique: true });
 
 const Wishlist = mongoose.model("Wishlist", wishlistSchema);
 

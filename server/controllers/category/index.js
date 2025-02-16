@@ -33,10 +33,10 @@ exports.createCategory = async (req, res) => {
       const newCategory = new Category({ name, parent, customFields, inheritedCustomFields });
       await newCategory.save();
   
-      res.json({ success: true, message: "[Category] Category created successfully", data: newCategory }).status(201);
+      res.status(201).json({ success: true, message: "[Category] Category created successfully", data: newCategory });
   
     } catch (error) {
-      res.json({ success: false, message: `[Category] ${error.message}`, data : null }).status(500);
+      res.status(500).json({ success: false, message: `[Category] ${error.message}`, data : null });
     }
   };
   
@@ -44,10 +44,10 @@ exports.createCategory = async (req, res) => {
   exports.getCategories = async (req, res) => {
     try {
       const categories = await Category.find().populate("parent", "name");
-      res.json({ success: true, message : "[Category] Categories Retreived successfully", data: categories }).status(200);
+      res.status(200).json({ success: true, message : "[Category] Categories Retreived successfully", data: categories });
   
     } catch (error) {
-      res.json({ success: false, message: `[Category] ${error.message}`, data : null }).status(500);
+      res.status(500).json({ success: false, message: `[Category] ${error.message}`, data : null });
     }
   };
   
@@ -58,7 +58,7 @@ exports.createCategory = async (req, res) => {
       const { categoryId } = req.params;
   
       let category = await Category.findById(categoryId);
-      if (!category) return res.json({ success: false, message: "Category] Category not found", data : null }).status(404);
+      if (!category) return res.status(404).json({ success: false, message: "Category] Category not found", data : null });
   
       // Update category details
       category.name = name || category.name;
@@ -66,10 +66,10 @@ exports.createCategory = async (req, res) => {
       category.inheritedCustomFields = await computeInheritedFields(category.parent);
   
       await category.save();
-      res.json({ success: true, message: "[Category] Category updated successfully", data: category }).status(200);
+      res.status(200).json({ success: true, message: "[Category] Category updated successfully", data: category });
   
     } catch (error) {
-      res.json({ success: false, message: `[Category] ${error.message}`, data : null }).status(500);
+      res.status(500).json({ success: false, message: `[Category] ${error.message}`, data : null });
     }
   };
   
@@ -79,12 +79,12 @@ exports.createCategory = async (req, res) => {
       const { categoryId } = req.params;
   
       let category = await Category.findById(categoryId);
-      if (!category) return res.json({ success: false, message: "[Category] Category not found", data : null }).status(404);
+      if (!category) return res.status(404).json({ success: false, message: "[Category] Category not found", data : null });
   
       await category.deleteOne();
-      res.json({ success: true, message: "[Category] Category deleted successfully", data : null }).status(200);
+      res.status(200).json({ success: true, message: "[Category] Category deleted successfully", data : null });
   
     } catch (error) {
-      res.json({ success: false, message: `[Category] ${error.message}`, data : null }).status(500);
+      res.status(500).json({ success: false, message: `[Category] ${error.message}`, data : null });
     }
   };

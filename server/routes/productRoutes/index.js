@@ -1,5 +1,5 @@
 const express = require('express');
-const { addProduct, getAllProduct, getSpecificProduct, deleteProduct, updateProduct, handleProductImageUpoad } = require('../../controllers/manage_products');
+const { addProduct, getAllProduct, getSpecificProduct, deleteProduct, updateProduct, handleProductImageUpoad } = require('../../controllers/products');
 const { upload } = require('../../cloudinary/cloudinary');
 const router = express.Router();
 
