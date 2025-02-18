@@ -1,5 +1,6 @@
 import LoadingScreen from '@/common/loadingScreen';
 import PanelDashboard from '@/components/panel-view/dashboard';
+import AdminDashboard from '@/pages/admin-view/adminDashboard';
 import AdminPanelView from '@/pages/admin-view/adminPanelView';
 import NotFound from '@/pages/not-found/notFound';
 import PanelView from '@/pages/panel-view/panelView';
@@ -23,7 +24,9 @@ function AdminRoutes() {
                 {/* <Route path='/' element={<PanelView />} >
                     <Route path="dashboard" element={<PanelDashboard userRole={user?.role} />} />
                 </Route> */}
-                <Route path='/dashboard' element={<AdminPanelView userRole={user?.role} />} />
+                <Route path='/dashboard' element={<AdminPanelView userRole={user?.role} />} >
+                  <Route path='' element={<AdminDashboard />} />
+                </Route>
                 <Route path='/*' element={<NotFound />} />
             </Routes>
         );

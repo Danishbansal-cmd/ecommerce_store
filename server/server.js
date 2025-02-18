@@ -6,6 +6,7 @@ const authRoutes = require('./routes/userRoutes')
 const rolesRoutes = require('./routes/rolesRoutes')
 const departmentRoutes = require('./routes/departmentRoutes')
 const productRoutes = require('./routes/productRoutes')
+const orderRoutes = require('./routes/orderRoutes')
 
 const cookieParser = require('cookie-parser')
 
@@ -44,6 +45,7 @@ app.use('/api/v1', authRoutes)
 app.use('/api/v1', rolesRoutes)
 app.use('/api/v1', departmentRoutes)
 app.use('/api/v1', productRoutes)
+app.use('/api/v1', orderRoutes)
 
 app.listen(PORT, () => {
     console.log('listening on port ' , PORT)

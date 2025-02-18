@@ -40,6 +40,12 @@ export default {
 				colorText : {
 					light : '#A27E7E'
 				},
+				colorTextSecondary : {
+					light : '#694343'
+				},
+				colorSort : {
+					light : '#ffb3b3'
+				},
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				card: {

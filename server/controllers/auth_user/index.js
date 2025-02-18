@@ -273,13 +273,19 @@ const loginUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
   try {
-    res.status(200).json({
+     // ✅ Clear the authentication cookie
+     res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",  // Ensure it's secure (use false for local testing)
+    });
+    
+    return res.status(200).json({
       success: true,
       data: null,
       message: "[Logout User] Logged Out Successfully",
     });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: "[Logout User] Some Error Occured",
       data: null,

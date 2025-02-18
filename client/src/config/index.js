@@ -115,6 +115,23 @@ export const adminSidebarElements = [
         ]
     },
     {
+        heading: "ORDER SECTION",
+        subheading: [
+            {
+                name: "Orders",
+                icon: AiOutlineShoppingCart, 
+                items: [
+                { name: "All" },
+                { name: "Pending" },
+                { name: "Confirmed" },
+                { name: "Delivered" },
+                { name: "Refunded" },
+                { name: "Out for Delivery" },
+                ],
+            }
+        ]
+    },
+    {
         heading: "ITEMS MANAGEMENT",
         subheading: [
             {
@@ -134,23 +151,6 @@ export const adminSidebarElements = [
                     { name: "Category" },
                     { name: "Sub Category" },
                     { name: "Create Category" },
-                ],
-            }
-        ]
-    },
-    {
-        heading: "ORDER SECTION",
-        subheading: [
-            {
-                name: "Orders",
-                icon: AiOutlineShoppingCart, 
-                items: [
-                { name: "All" },
-                { name: "Pending" },
-                { name: "Confirmed" },
-                { name: "Delivered" },
-                { name: "Refunded" },
-                { name: "Out for Delivery" },
                 ],
             }
         ]

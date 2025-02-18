@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaAngleLeft, FaBars } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { MdOutlineSearch } from "react-icons/md";
 import { adminSidebarElements } from "@/config";
 
-function SidebarSearch({searchTerm, setSearchTerm, setFilteredMenuItems}) {
+function SidebarSearch({ searchTerm, setSearchTerm, setFilteredMenuItems }) {
   // Debounce search functionality
   const handleSearch = (e) => {
     const value = e.target.value;
@@ -48,6 +48,9 @@ function SidebarSearch({searchTerm, setSearchTerm, setFilteredMenuItems}) {
 }
 
 function SidebarMenuList({ filteredMenuItems }) {
+  const location = useLocation(); // ✅ Get the current URL
+  const currentPath = location.pathname.toLowerCase(); // Convert to lowercase for comparison
+
   return (
     <div className="w-full">
       <ul className="w-full">
@@ -62,40 +65,47 @@ function SidebarMenuList({ filteredMenuItems }) {
 
             {/* Subheadings */}
             {section.subheading &&
-              section.subheading.map((sub, idx) => (
-                <div key={idx}>
-                  {/* Top-level item */}
-                  <div className="flex items-center space-x-2 h-12 pl-4">
-                    {sub.icon && (
-                      <span className="text-lg">
-                        <sub.icon className="text-2xl" />
-                      </span>
+              section.subheading.map((sub, idx) => {
+                // ✅ Check if current menu item matches the URL
+                const isActive = currentPath.includes(sub.name.toLowerCase());
+
+                return (
+                  <div key={idx}>
+                    {/* Top-level item */}
+                    <div className={`flex items-center space-x-2 h-12 pl-4 ${
+                        isActive ? "bg-backgroundSecondary-light" : "" // ✅ Apply background color if active
+                      }`}>
+                      {sub.icon && (
+                        <span className="text-lg">
+                          <sub.icon className="text-2xl" />
+                        </span>
+                      )}
+                      <span className="font-semibold">{sub.name}</span>
+                    </div>
+
+                    {/* Nested items */}
+                    {sub.items && (
+                      <ul className="pl-12">
+                        {sub.items.map((item, itemIdx) => (
+                          <li
+                            key={itemIdx}
+                            className="h-12 font-bold flex items-center justify-between hover:text-gray-400 cursor-pointer text-sm pr-4"
+                          >
+                            {/* Disc and Name */}
+                            <div className="flex items-center space-x-2">
+                              <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
+                              <span>{item.name}</span>
+                            </div>
+
+                            {/* Dash */}
+                            <span className="text-white font-bold">-</span>
+                          </li>
+                        ))}
+                      </ul>
                     )}
-                    <span className="font-semibold">{sub.name}</span>
                   </div>
-
-                  {/* Nested items */}
-                  {sub.items && (
-                    <ul className="pl-12">
-                      {sub.items.map((item, itemIdx) => (
-                        <li
-                          key={itemIdx}
-                          className="h-12 font-bold flex items-center justify-between hover:text-gray-400 cursor-pointer text-sm pr-4"
-                        >
-                          {/* Disc and Name */}
-                          <div className="flex items-center space-x-2">
-                            <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
-                            <span>{item.name}</span>
-                          </div>
-
-                          {/* Dash */}
-                          <span className="text-white font-bold">-</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
+                );
+              })}
           </li>
         ))}
       </ul>
@@ -109,7 +119,7 @@ function MobileViewSidebar({
   searchTerm,
   setSearchTerm,
   filteredMenuItems,
-  setFilteredMenuItems
+  setFilteredMenuItems,
 }) {
   return (
     <div
@@ -153,7 +163,11 @@ function MobileViewSidebar({
     [&::-webkit-scrollbar-thumb]:bg-gray-200"
       >
         {/* Search Input */}
-        <SidebarSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} setFilteredMenuItems={setFilteredMenuItems}/>
+        <SidebarSearch
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          setFilteredMenuItems={setFilteredMenuItems}
+        />
 
         <div className="w-full">
           <SidebarMenuList filteredMenuItems={filteredMenuItems} />
@@ -169,7 +183,7 @@ function DesktopViewSidebar({
   searchTerm,
   setSearchTerm,
   filteredMenuItems,
-  setFilteredMenuItems
+  setFilteredMenuItems,
 }) {
   return (
     <div
@@ -190,7 +204,11 @@ function DesktopViewSidebar({
     [&::-webkit-scrollbar-thumb]:bg-gray-200"
       >
         {/* Search Input */}
-        <SidebarSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} setFilteredMenuItems={setFilteredMenuItems}/>
+        <SidebarSearch
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          setFilteredMenuItems={setFilteredMenuItems}
+        />
 
         <div className="w-full">
           <SidebarMenuList filteredMenuItems={filteredMenuItems} />
@@ -208,18 +226,18 @@ function AdminSidebar() {
   const [filteredMenuItems, setFilteredMenuItems] =
     useState(adminSidebarElements);
 
-    useEffect(() => {
-      const handleResize = () => {
-        setWidth(window.innerWidth);
-      };
-  
-      window.addEventListener("resize", handleResize);
-      
-      // Cleanup event listener on unmount
-      return () => {
-        window.removeEventListener("resize", handleResize);
-      };
-    }, [])
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div
@@ -275,25 +293,25 @@ function AdminSidebar() {
       {/* Mobile Menu */}
       <div className="md:hidden">
         <MobileViewSidebar
-        isMobileMenuOpen={isMobileMenuOpen}
-        setIsMobileMenuOpen={setIsMobileMenuOpen}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        filteredMenuItems={filteredMenuItems}
-        setFilteredMenuItems={setFilteredMenuItems}
-      />
+          isMobileMenuOpen={isMobileMenuOpen}
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          filteredMenuItems={filteredMenuItems}
+          setFilteredMenuItems={setFilteredMenuItems}
+        />
       </div>
-      
+
       {/* Desktop Menu */}
       <div className="hidden md:block">
-      <DesktopViewSidebar
-        isMobileMenuOpen={isMobileMenuOpen}
-        setIsMobileMenuOpen={setIsMobileMenuOpen}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        filteredMenuItems={filteredMenuItems}
-        setFilteredMenuItems={setFilteredMenuItems}
-      />
+        <DesktopViewSidebar
+          isMobileMenuOpen={isMobileMenuOpen}
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          filteredMenuItems={filteredMenuItems}
+          setFilteredMenuItems={setFilteredMenuItems}
+        />
       </div>
     </div>
   );

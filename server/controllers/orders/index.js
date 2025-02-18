@@ -1,7 +1,7 @@
 const Order = require("../../models/Order");
 const Item = require("../../models/Item");
 
-// 1️⃣ ✅ Create a new order
+// ✅ Create a new order
 exports.createOrder = async (req, res) => {
   try {
     const { user, items, paymentInfo, shippingAddress, estimatedDeliveryDate } = req.body;
@@ -37,7 +37,7 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-// 2️⃣ ✅ Get all orders (Admin)
+// ✅ Get all orders (Admin)
 exports.getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find().populate("user", "name email").populate("items.item", "name price");
@@ -47,7 +47,42 @@ exports.getAllOrders = async (req, res) => {
   }
 };
 
-// 3️⃣ ✅ Get orders for a specific user
+// ✅ Get all orders Statuses Only (Admin)
+exports.getAllOrdersStatuses = async (req, res) => {
+  try {
+    // Check if the user is an admin
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "[Order] Unauthorized access. Only admins can view order statuses.",
+        data: null,
+      });
+    }
+
+    // Proceed with fetching the order statuses if the user is an admin
+      const orders = await Order.aggregate([
+        {
+          $group: {
+            _id: "$orderStatus", // Group by orderStatus
+            totalOrders: { $sum: 1 }, // Count the number of orders per status
+          },
+        },
+        {
+          $project: {
+            _id: 0, // Remove _id from the final result
+            orderStatus: "$_id", // Rename _id to orderStatus
+            totalOrders: 1, // Include the totalOrders count
+          },
+        },
+      ]);
+    
+    res.status(200).json({ success: true, message: "[Order] Orders fetched successfully", orders });
+  } catch (error) {
+    res.status(500).json({ success: false, message: `[Order] ${error.message}`, data: null });
+  }
+};
+
+// ✅ Get orders for a specific user
 exports.getUserOrders = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -63,7 +98,7 @@ exports.getUserOrders = async (req, res) => {
   }
 };
 
-// 4️⃣ ✅ Get a single order by ID
+// ✅ Get a single order by ID
 exports.getOrderById = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -79,7 +114,7 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
-// 5️⃣ ✅ Update order status (Admin)
+// ✅ Update order status (Admin)
 exports.updateOrderStatus = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -102,7 +137,7 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
-// 6️⃣ ✅ Delete an order (Admin)
+// ✅ Delete an order (Admin)
 exports.deleteOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
