@@ -34,7 +34,7 @@ export const loginUser = createAsyncThunk(
       return (response.status === 200) ? response.data : rejectWithValue(response.data || { message: "Unknown error occurred" }); 
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || { message: "Network error, please try again." }
+        error.response?.data || { message: `Network error, please try again. ${error.message}` }
       );
     }
   }
@@ -97,15 +97,11 @@ const authSlice = createSlice({
     .addCase(registerUser.pending, (state) => {
       state.isLoading = true;
     })
-    .addCase(registerUser.fulfilled, (state, action) => {
+    .addCase(registerUser.fulfilled, (state) => {
       state.isLoading = false;
-      state.user = state.user?.role === 'admin' ? state.user : null;
-      state.isAuthenticated = state.user?.role === 'admin' ? true : false;
     })
-    .addCase(registerUser.rejected, (state, action) => {
+    .addCase(registerUser.rejected, (state) => {
       state.isLoading = false;
-      state.user = state.user?.role === 'admin' ? state.user : null;
-      state.isAuthenticated = state.user?.role === 'admin' ? true : false;
     })
     .addCase(loginUser.pending, (state) => {
       state.isLoading = true;
@@ -113,8 +109,8 @@ const authSlice = createSlice({
     .addCase(loginUser.fulfilled, (state, action) => {
       console.log(action,'from the auth slice action')
       state.isLoading = false;
-      state.user = action?.payload?.data ?? null;
-      state.isAuthenticated = action?.payload?.data ? true : false;
+      state.user = action.payload?.data ?? null;
+      state.isAuthenticated = action.payload?.data ? true : false;
     })
     .addCase(loginUser.rejected, (state) => {
       state.isLoading = false;
@@ -127,8 +123,8 @@ const authSlice = createSlice({
     .addCase(checkUser.fulfilled, (state, action) => {
       console.log(action, '[Login User] from slice fulfilled')
       state.isLoading = false;
-      state.user = action?.payload?.data ?? null;
-      state.isAuthenticated = action?.payload?.data ? true : false;
+      state.user = action.payload?.data ?? null;
+      state.isAuthenticated = action.payload?.data ? true : false;
     })
     .addCase(checkUser.rejected, (state, action) => {
       state.isLoading = false;
@@ -139,7 +135,7 @@ const authSlice = createSlice({
       state.allUserList = null;
     })
     .addCase(getAllUsers.fulfilled, (state, action) => {
-      state.allUserList = action?.payload?.data;
+      state.allUserList = action.payload?.data;
     })
     .addCase(getAllUsers.rejected, (state, action) => {
       state.allUserList = null;

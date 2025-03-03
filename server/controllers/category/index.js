@@ -1,3 +1,4 @@
+const { uploadFile } = require("../../cloudinary/cloudinary");
 const Category = require("../../models/Category");
 
 const computeInheritedFields = async (categoryId) => {
@@ -21,16 +22,34 @@ const computeInheritedFields = async (categoryId) => {
 // ✅ 1. Create a Category
 exports.createCategory = async (req, res) => {
     try {
-      const { name, parent, customFields } = req.body;
+      const { name, parent, customFields, showOnHomepage } = req.body;
   
       // Compute inherited fields from parent categories
       let inheritedCustomFields = parent ? await computeInheritedFields(parent) : [];
   
       // Merge current category's fields with inherited fields
       inheritedCustomFields = [...inheritedCustomFields, ...customFields];
+
+      // Upload image to cloudinary
+      let image;
+      if(req.file){
+        try{
+          const base64 = Buffer.from(req.file.buffer).toString("base64");
+          const url = `data:${req.file.mimetype};base64,${base64}`;
+          const uploadResult = await uploadFile(url);
+
+          image = {
+            url: uploadResult.secure_url,
+            public_id: uploadResult.public_id,
+          }
+        }catch(error){
+          // Throw the error to be caught by outer catch
+          throw new Error(`Image upload failed: ${error.message}`);
+        }
+      }
   
       // Create new category
-      const newCategory = new Category({ name, parent, customFields, inheritedCustomFields });
+      const newCategory = new Category({ name, parent, customFields, inheritedCustomFields, image, showOnHomepage });
       await newCategory.save();
   
       res.status(201).json({ success: true, message: "[Category] Category created successfully", data: newCategory });
@@ -45,7 +64,6 @@ exports.createCategory = async (req, res) => {
     try {
       const categories = await Category.find().populate("parent", "name");
       res.status(200).json({ success: true, message : "[Category] Categories Retreived successfully", data: categories });
-  
     } catch (error) {
       res.status(500).json({ success: false, message: `[Category] ${error.message}`, data : null });
     }

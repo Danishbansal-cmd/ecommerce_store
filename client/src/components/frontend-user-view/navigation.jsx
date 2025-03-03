@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { BsCart, BsPerson } from "react-icons/bs";
 import { MdOutlineSearch } from "react-icons/md";
+import { AiOutlineSearch } from 'react-icons/ai';
 
 function NavigationBar({ additionalComponent }) {
   const { user } = useSelector(state => state.auth);
@@ -41,7 +42,7 @@ function NavigationBar({ additionalComponent }) {
               <div className='flex gap-10 h-full items-center'>
                 {/* for search box */}
                 <div className='flex items-center w-96 bg-colorMainShadeDark-light gap-4 h-10 px-4'>
-                  <MdOutlineSearch style={{color : "#FFA27F", fontSize : "1.6rem"}}/>
+                  <AiOutlineSearch style={{color : "#FFA27F", fontSize : "1.6rem"}}/>
                   <input placeholder="Search for products, brands and more" className='w-full bg-transparent text-colorSecondary-light focus:outline-none placeholder:text-colorSecondary-light'/>
                 </div>
 

@@ -28,16 +28,26 @@ exports.createItem = async (req, res) => {
     let images = [];
     if (req.files && req.files.length > 0) {
       const uploadPromises = req.files.map(async (file) => {
-        const b64 = Buffer.from(file.buffer).toString("base64");
-        const url = `data:${file.mimetype};base64,${b64}`;
-        const uploadResult = await uploadFile(url);
-        return {
-          url: uploadResult.secure_url,
-          public_id: uploadResult.public_id,
-        };
+        try {
+          const b64 = Buffer.from(file.buffer).toString("base64");
+          const url = `data:${file.mimetype};base64,${b64}`;
+          const uploadResult = await uploadFile(url);
+          return {
+            url: uploadResult.secure_url,
+            public_id: uploadResult.public_id,
+          };
+        } catch (error) {
+          console.error(`Failed to upload file: ${error.message}`);
+          // You can choose to either:
+          // 1. Return null for failed uploads (filtered out below)
+          return null;
+          // 2. Or throw the error to fail the entire upload process
+          // throw new Error(`Failed to upload image: ${error.message}`);
+        }
       });
 
-      images = await Promise.all(uploadPromises);
+      // Filter out any failed uploads (null values)
+      images = (await Promise.all(uploadPromises)).filter(Boolean);
     }
 
     // ✅ Save the item

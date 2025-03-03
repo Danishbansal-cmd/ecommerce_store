@@ -7,6 +7,9 @@ const rolesRoutes = require('./routes/rolesRoutes')
 const departmentRoutes = require('./routes/departmentRoutes')
 const productRoutes = require('./routes/productRoutes')
 const orderRoutes = require('./routes/orderRoutes')
+const bannerRoutes = require('./routes/bannerRoutes')
+const categoryRoutes = require('./routes/categoryRoutes')
+const brandRoutes = require('./routes/brandRoutes')
 
 const cookieParser = require('cookie-parser')
 
@@ -36,7 +39,7 @@ app.use(express.urlencoded({ extended: true })); // Parses form data
 app.use(cookieParser());
 
 app.get('/', (req, res) => {
-    res.send('Hel xpress');
+    res.send('Hello xpress');
 })
 
 
@@ -46,6 +49,9 @@ app.use('/api/v1', rolesRoutes)
 app.use('/api/v1', departmentRoutes)
 app.use('/api/v1', productRoutes)
 app.use('/api/v1', orderRoutes)
+app.use('/api/v1', bannerRoutes)
+app.use('/api/v1', categoryRoutes)
+app.use('/api/v1', brandRoutes)
 
 app.listen(PORT, () => {
     console.log('listening on port ' , PORT)

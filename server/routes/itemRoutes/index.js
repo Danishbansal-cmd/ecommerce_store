@@ -1,5 +1,6 @@
 const express = require("express");
-const { createItem, getItems, updateItem, deleteItem } = require("../../controllers/manage_items");
+const { createItem, getItems, updateItem, deleteItem } = require("../../controllers/items");
+const { upload } = require("../../cloudinary/cloudinary");
 const { tokenVerification } = require("../../controllers/auth_user");
 const router = express.Router();
 

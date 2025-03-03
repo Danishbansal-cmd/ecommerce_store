@@ -1,31 +1,55 @@
-
-const Banner = require("../../models/Banner");
-const cloudinary = require("../config/cloudinary"); // Cloudinary Config (For Image Uploads)
+const Banner = require("../../models/Banner"); // Cloudinary Config (For Image Uploads)
 
 // ✅ 1. Add a New Banner
 // ❌❌❌ needs to review this 
 exports.addBanner = async (req, res) => {
   try {
     const { title, description, bannerType, targetLink, isActive } = req.body;
-    const file = req.file; // Image file uploaded
-
-    if (!file) {
-      return res.status(400).json({ success: false, message: "[Banner] Banner image is required", data : null });
+    
+    // Check for req.file
+    // as req.file is for single file upload
+    // giving the functionality to upload the single file only
+    if (!req.file) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "[Banner] Banner image is required", 
+        data: null 
+      });
     }
 
-    // Upload image to Cloudinary
-    const uploadResult = await cloudinary.uploader.upload(file.path, {
-      folder: "banners",
-    });
+    // to add the single file to the cloudinary
+    // because only one image is allowed to be uploaded for the banner image
+    let image = null;
+    try{
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      const url = `data:${req.file.mimetype};base64,${b64}}`;
+      const uploadResult = await uploadFile(url);
+      image = {
+        url: uploadResult.secure_url,
+        public_id: uploadResult.public_id,
+      };
+    }catch(error){
+      console.error('Error uploading file to Cloudinary:', error);
+      return res.status(500).json({ 
+        success: false, 
+        message: "[Banner] Error uploading image", 
+        data: null 
+      });
+    }
+    
+    if (!image) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "[Banner] Banner image upload failed", 
+        data: null 
+      });
+    }
 
     // Create new banner
     const newBanner = new Banner({
       title,
       description,
-      image: {
-        url: uploadResult.secure_url,
-        public_id: uploadResult.public_id,
-      },
+      image,
       bannerType,
       targetLink,
       isActive,
@@ -42,8 +66,13 @@ exports.addBanner = async (req, res) => {
 // ✅ 2. Get All Banners (Filtered by Status)
 exports.getBanners = async (req, res) => {
   try {
+    const { bannerType } = req.body;
     const { isActive } = req.query;
-    const query = isActive !== undefined ? { isActive } : {}; // Filter by active/inactive banners
+
+    const query = {};
+    if (isActive !== undefined) query.isActive = isActive; // Filter by active/inactive banners
+    if (bannerType !== undefined) query.bannerType = bannerType; // Filter by banner type
+    
     const banners = await Banner.find(query).sort({ createdAt: -1 });
 
     res.status(200).json({ success: true, data: banners, message : "[Banner] Retrieved all Banners Successfully" });

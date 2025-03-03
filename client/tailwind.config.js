@@ -37,6 +37,9 @@ export default {
 				backgroundSecondaryBorder: {
 					light : '#E6ABAB'
 				},
+				littleSection : {
+					light : '#97BE5A'
+				},
 				colorText : {
 					light : '#A27E7E'
 				},
@@ -91,6 +94,7 @@ export default {
 			},
 			boxShadow: {
 				'custom': '0 4px 8px rgba(0, 0, 0, 0.06), 0 -4px 8px rgba(0, 0, 0, 0.06)',
+				'customSection': '0 4px 8px rgba(0, 0, 0, 0.04), 0 -4px 8px rgba(0, 0, 0, 0.06)',
 			},
 			screens: {
 				xs: '320px', // Custom breakpoint for 384px

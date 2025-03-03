@@ -12,12 +12,17 @@ const storage = new multer.memoryStorage();
 const upload = multer({storage});
 
 async function uploadFile(file) {
-    const result = await cloudinary.uploader
-        .upload(file, {
-            resource_type: "auto",
-            folder : process.env.CLOUDINARY_FOLDER // a default folder in cloudinary to store all images/video
-        });
-    return result;
+    try {
+        const result = await cloudinary.uploader
+            .upload(file, {
+                resource_type: "auto",
+                folder: process.env.CLOUDINARY_FOLDER
+            });
+        return result;
+    } catch (error) {
+        console.error('Error uploading file to Cloudinary:', error);
+        throw error; // Re-throw the error to handle it in the calling function
+    }
 }
 
 

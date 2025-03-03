@@ -7,6 +7,26 @@ const categorySchema = new mongoose.Schema(
       required: [true, "Category name is required"],
       trim: true,
     },
+    discount: {
+      type: Number,
+      min: 0,
+      max: 100,
+      default: 0, // Default discount is 0%
+    },
+    showOnHomepage: {
+      type: Boolean,
+      default: false,
+    },
+    image: {
+      url: {
+        type: String,
+        required: true,
+      },
+      public_id: {
+        type: String,
+        required: true,
+      },
+    },
     parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",

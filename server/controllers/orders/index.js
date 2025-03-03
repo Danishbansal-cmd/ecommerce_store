@@ -40,7 +40,7 @@ exports.createOrder = async (req, res) => {
 // ✅ Get all orders (Admin)
 exports.getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate("user", "name email").populate("items.item", "name price");
+    const orders = await Order.find().populate("user", "username email").populate("items.item", "name price");
     res.status(200).json({ success: true, message: "[Order] Orders fetched successfully", orders });
   } catch (error) {
     res.status(500).json({ success: false, message: `[Order] ${error.message}`, data: null });

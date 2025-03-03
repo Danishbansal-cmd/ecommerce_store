@@ -625,6 +625,18 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const isAdmin = async (req, res, next) => {
+  // Check if the user is an admin
+  if (req.user.role !== "admin") {
+    return res.status(403).json({
+      success: false,
+      message: "[Auth] Unauthorized access. Only admins can perform this action.",
+      data: null,
+    });
+  }
+  next();
+}
+
 module.exports = {
   loginUser,
   tokenVerification,
@@ -637,4 +649,5 @@ module.exports = {
   getAllUsers,
   deleteUser,
   sendEmailVerificationLink,
+  isAdmin
 };
