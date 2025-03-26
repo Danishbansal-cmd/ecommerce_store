@@ -43,7 +43,7 @@ app.use(cors(corsOptions));
 
 
 // Handle Preflight Requests
-app.options('*', cors(corsOptions));  // ADD THIS LINE HERE
+// app.options('*', cors(corsOptions));  // ADD THIS LINE HERE
 
 // middlewares
 app.use(express.json());
