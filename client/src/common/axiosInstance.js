@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000/api/v1', // Base URL for your API
+  // baseURL: 'http://localhost:5000/api/v1', // Base URL for your API (for localhost)
+  baseURL: 'https://ecommerce-store-eosin-chi.vercel.app/api/v1', // Base URL for your API (for vercel)
 });
 
 export default axiosInstance;
