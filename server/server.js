@@ -22,7 +22,7 @@ const PORT = process.env.SERVER_PORT || 5000;
 
 const allowedOrigins = [
     'https://ecommerce-site-danish.netlify.app',
-    'https://ecommerce-site-danish.netlify.app',
+    'https://ecommerce-store-eosin-chi.vercel.app',
     'http://localhost:5173',
     'http://localhost:5174',];
 
