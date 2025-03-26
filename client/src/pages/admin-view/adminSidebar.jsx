@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaAngleLeft, FaBars } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { MdOutlineSearch } from "react-icons/md";
@@ -50,6 +50,19 @@ function SidebarSearch({ searchTerm, setSearchTerm, setFilteredMenuItems }) {
 function SidebarMenuList({ filteredMenuItems }) {
   const location = useLocation(); // ✅ Get the current URL
   const currentPath = location.pathname.toLowerCase(); // Convert to lowercase for comparison
+  const navigate = useNavigate();
+
+  function moveToSubDomain(subheading, item){
+    let subheadingName = subheading?.name?.trim().toLowerCase().replace(/\s+/g, "-") || "";
+    let itemName = item?.name?.trim().toLowerCase().replace(/\s+/g, "-") || "";
+    
+    let baseUrl = window.location.origin; // Gets "http://localhost:5173"
+    let newUrl = itemName 
+        ? `${baseUrl}/${currentPath.split("/")[1]}/${subheadingName}/${itemName}` 
+        : `${baseUrl}/${currentPath.split("/")[1]}/${subheadingName}`;
+    
+        window.location.replace(newUrl);
+  }
 
   return (
     <div className="w-full">
@@ -66,15 +79,25 @@ function SidebarMenuList({ filteredMenuItems }) {
             {/* Subheadings */}
             {section.subheading &&
               section.subheading.map((sub, idx) => {
-                // ✅ Check if current menu item matches the URL
-                const isActive = currentPath.includes(sub.name.toLowerCase());
+                // Check if current menu item matches the URL
+                const isSubActive = currentPath.includes(sub.name.toLowerCase().replace(/\s+/g,"-"));
+                const isItemActive = sub.items?.some((item) => {
+                  return currentPath.includes(item.name.toLowerCase().replace(/\s+/g, "-"))
+                });
+                console.log("isItemActive: ",isItemActive )
+
+                // Highlight subheading if it is active or if any of its items are active
+                const isActive = isSubActive && !isItemActive;
 
                 return (
                   <div key={idx}>
                     {/* Top-level item */}
                     <div className={`flex items-center space-x-2 h-12 pl-4 ${
-                        isActive ? "bg-backgroundSecondary-light" : "" // ✅ Apply background color if active
-                      }`}>
+                        isActive ? "bg-backgroundSecondary-light" : "" // Apply background color if active
+                      }`} onClick={() => {
+                        console.log("sub",sub)
+                        moveToSubDomain(sub);
+                      }}>
                       {sub.icon && (
                         <span className="text-lg">
                           <sub.icon className="text-2xl" />
@@ -85,22 +108,34 @@ function SidebarMenuList({ filteredMenuItems }) {
 
                     {/* Nested items */}
                     {sub.items && (
-                      <ul className="pl-12">
-                        {sub.items.map((item, itemIdx) => (
-                          <li
-                            key={itemIdx}
-                            className="h-12 font-bold flex items-center justify-between hover:text-gray-400 cursor-pointer text-sm pr-4"
-                          >
-                            {/* Disc and Name */}
-                            <div className="flex items-center space-x-2">
-                              <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
-                              <span>{item.name}</span>
-                            </div>
+                      <ul className="">
+                        {sub.items.map((item, itemIdx) => {
+                          const isCurrentItemActive = currentPath.includes(
+                            item.name.toLowerCase().replace(/\s+/g, "-")
+                          );
 
-                            {/* Dash */}
-                            <span className="text-white font-bold">-</span>
-                          </li>
-                        ))}
+
+                          return (
+                            <li
+                              key={itemIdx}
+                              className={`pl-12 h-12 font-bold flex items-center justify-between hover:text-gray-400 cursor-pointer text-sm pr-4 ${
+                                isCurrentItemActive ? "bg-backgroundSecondary-light" : "" // Apply background color if active
+                              }`}
+                              onClick={() => {
+                                moveToSubDomain(sub, item);
+                              }}
+                            >
+                              {/* Disc and Name */}
+                              <div className="flex items-center space-x-2">
+                                <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
+                                <span>{item.name}</span>
+                              </div>
+  
+                              {/* Dash */}
+                              <span className="text-white font-bold">-</span>
+                            </li>
+                          )
+                        })}
                       </ul>
                     )}
                   </div>

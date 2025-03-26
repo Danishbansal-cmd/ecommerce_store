@@ -152,11 +152,12 @@ const createUserByAdmin = async (req, res) => {
 const tokenVerification = async (req, res, next) => {
     try {
       let token;
+      req.user = null;
   
       // Check for token in Authorization Header
       const authHeader = req.header("Authorization");
       if (authHeader && authHeader.startsWith("Bearer ")) {
-        token = authHeader.split(" ")[1]; // Extract Bearer token
+        token = authHeader.split(" ")[1].trim(); // Extract Bearer token and trim spaces
       }
   
       // If token not found in header, check in cookies
@@ -168,8 +169,11 @@ const tokenVerification = async (req, res, next) => {
       console.log("[DEBUG] Token received:", token);
   
       if (!token) {
-        return res.status(401).json({ success: false, message: "[Check Token] No token provided" });
-      }
+        return res.status(401).json({
+          success: false,
+          message: "[Check Token] No token provided. Expected in 'Authorization' header or 'cookies.token'."
+        });
+        }
   
       // Verify the token
       const verified = jwt.verify(token, process.env.TOKEN_SECRET);

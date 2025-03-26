@@ -13,9 +13,11 @@ function Home() {
           [&::-webkit-scrollbar-track]:bg-transparent 
           [&::-webkit-scrollbar-thumb]:bg-colorSecondary-light'>
       <NavigationBar />
-      <FrontEndUserContent />
+      {/* Outlet is used to render the content of the page */}
+      <div className="flex-grow">
+        <Outlet />
+      </div>
       <Footer />
-      {/* <Outlet /> */}
     </div>
   );
 };

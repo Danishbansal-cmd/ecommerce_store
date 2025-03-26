@@ -24,9 +24,13 @@ function UserRoutes() {
             </Routes>
         );
     } else if (isAuthenticated && (user?.role === 'user' || user?.role === 'admin')) {
-        return (<Navigate to='/panel/dashboard' />);
+        // return (<Navigate to='/panel/dashboard' />);
+        window.location.href = "/panel/dashboard";
+        return null;
     } else {
-        return (<Navigate to='/login' />);
+        // return (<Navigate to='/login' />);
+        window.location.href = "/login";
+        return null;
     }
 
 };

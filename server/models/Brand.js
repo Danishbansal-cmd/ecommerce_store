@@ -5,23 +5,21 @@ const brandSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  image: [
-    {
-      url: {
-        type: String,
-        required: true,
-      },
-      public_id: {
-        type: String,
-        required: true,
-      },
-      type : {
-        type: String,
-        enum: ["logo", "other"],
-        default: "other",
-      },
+  image: {
+    url: {
+      type: String,
+      required: true,
     },
-  ],
+    public_id: {
+      type: String,
+      required: true,
+    },
+    type : {
+      type: String,
+      enum: ["logo", "other"],
+      default: "other",
+    },
+  },
   showOnHomepage: {
     type: Boolean,
     default: false,

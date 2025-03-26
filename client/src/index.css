@@ -164,3 +164,49 @@ button:focus-visible {
   background: linear-gradient(to right, #e0e0e0 0%, #f0f0f0 50%, #e0e0e0 100%);
   animation: loading_animation 1.5s infinite linear;
 }
+
+.section-center {
+  margin: 0 auto;
+  margin-top: 4rem;
+  width: 80vw;
+  /* have to have a height */
+  height: 450px;
+  max-width: 800px;
+  text-align: center;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+}
+
+.banner-image{
+  display: grid;
+  grid-template-columns: 1fr; /* Default: Single column */
+  gap: 0.25rem; /* Equivalent to Tailwind's gap-1 (4px) */
+}
+
+/* Apply 2 columns on medium screens (768px and above) */
+@media (min-width: 768px) {
+  .banner-image {
+    grid-template-columns: repeat(2, 1fr); /* Two equal columns */
+  }
+}
+
+imagediv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: var(--transition);
+}
+imagediv.activeSlide {
+  opacity: 1;
+  transform: translateX(0);
+}
+imagediv.lastSlide {
+  transform: translateX(-100%);
+}
+imagediv.nextSlide {
+  transform: translateX(100%);
+}

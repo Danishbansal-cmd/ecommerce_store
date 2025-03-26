@@ -1,6 +1,7 @@
 import LoadingScreen from "@/common/loadingScreen";
 import PanelDashboard from "@/components/panel-view/dashboard";
 import AdminDashboard from "@/pages/admin-view/adminDashboard";
+import AdminItemsAddNew from "@/pages/admin-view/adminItemsAddNew";
 import AdminOrdersAll from "@/pages/admin-view/adminOrdersAll";
 import AdminPanelView from "@/pages/admin-view/adminPanelView";
 import NotFound from "@/pages/not-found/notFound";
@@ -31,7 +32,16 @@ function AdminRoutes() {
         <Route path="/" element={<AdminPanelView userRole={user?.role} />}>
           <Route index element={<AdminDashboard />} /> {/* ✅ Default route */}
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="orders/all" element={<AdminOrdersAll />} />
+          {/* Nested routes for orders */}
+          <Route path="orders">
+            <Route index element={<AdminOrdersAll />} /> {/* Default orders route */}
+            <Route path="all" element={<AdminOrdersAll />} />
+          </Route>
+          {/* Nested routes for items */}
+          <Route path="items">
+            <Route index element={<AdminItemsAddNew />} />
+            <Route path="add-new" element={<AdminItemsAddNew />} />
+          </Route>
           <Route path="/*" element={<NotFound />} />
         </Route>
       </Routes>

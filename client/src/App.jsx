@@ -23,6 +23,8 @@ import CancellationPolicy from './pages/legal/cancellationPolicy'
 import SentEmailVerificationLink from './components/email-verification/sentEmailVerificationLink'
 import SentResetPasswordEmail from './components/reset-password/sentResetPasswordEmail'
 import LoadingScreen from './common/loadingScreen'
+import ProductsPage from './pages/frontend-user-view/products'
+import FrontEndUserContent from './components/frontend-user-view/frontendusercontent'
 
 function App() {
 
@@ -30,12 +32,15 @@ function App() {
 
   useEffect(() => {
     dispatch(checkUser()).then((data) => {
+      console.log("checkUser data: " , data);
       // if user is logged in, then will also get the specific role
-      if (data?.payload?.success) {
-        // get the role and its permissions
-        // and store it in redux store(specificRole)
-        dispatch(getRole({ role: data?.payload?.data.role }));
-      }
+      // if (data?.payload?.success) {
+      //   // get the role and its permissions
+      //   // and store it in redux store(specificRole)
+      //   dispatch(getRole({ role: data?.payload?.data.role }));
+      // }
+    }).catch((error) => {
+      console.error("Error during checkUser data:", error);
     });
   }, [dispatch])
 
@@ -43,7 +48,12 @@ function App() {
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
         {/* for home page or main page */}
-        <Route path='/' element={<ProtectedRoutes><Home /></ProtectedRoutes>} />
+        <Route path='/' element={<ProtectedRoutes><Home /></ProtectedRoutes>} >
+          {/* Default content for Home page is the FrontEndUserContent */}
+          <Route index element={<ProtectedRoutes><FrontEndUserContent /></ProtectedRoutes>} />
+          {/* Dynamic search results */}
+          <Route path=":query" element={<ProtectedRoutes><ProductsPage /></ProtectedRoutes>} />
+        </Route>
         <Route path='/login' element={<ProtectedRoutes><MainForm /></ProtectedRoutes>}>
           <Route path='' element={<AuthLogin />} />
         </Route>

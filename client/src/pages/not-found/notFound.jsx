@@ -23,6 +23,7 @@ function NotFound() {
           </div>
         </div>
       </nav>
+      <div>not found</div>
     </div>
   );
 }

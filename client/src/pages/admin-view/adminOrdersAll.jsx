@@ -34,26 +34,26 @@ function AdminOrdersAll() {
       }
       return response.data;
     };
-    // fetchOrderAll(); // Extract all orders from the backend
+    fetchOrderAll(); // Extract all orders from the backend
 
-    setOrderDetails([
-      {
-        _id: "ORD123",
-        createdAt: "2024-02-18",
-        // user: { username: "John Doe", email: "john@example.com" },
-        totalAmount: 150,
-        // paymentInfo: { method: "Credit Card", status: "Completed" },
-        orderStatus: "Shipped",
-      },
-      {
-        _id: "ORD456",
-        createdAt: "2024-02-19",
-        // user: { username: "Jane Smith", email: "jane@example.com" },
-        totalAmount: 200,
-        // paymentInfo: { method: "PayPal", status: "Pending" },
-        orderStatus: "Pending",
-      },
-    ]);
+    // setOrderDetails([
+    //   {
+    //     _id: "ORD123",
+    //     createdAt: "2024-02-18",
+    //     // user: { username: "John Doe", email: "john@example.com" },
+    //     totalAmount: 150,
+    //     // paymentInfo: { method: "Credit Card", status: "Completed" },
+    //     orderStatus: "Shipped",
+    //   },
+    //   {
+    //     _id: "ORD456",
+    //     createdAt: "2024-02-19",
+    //     // user: { username: "Jane Smith", email: "jane@example.com" },
+    //     totalAmount: 200,
+    //     // paymentInfo: { method: "PayPal", status: "Pending" },
+    //     orderStatus: "Pending",
+    //   },
+    // ]);
   }, []); // Runs only once when the component mounts
 
   // ✅ Extract column names only after `orderDetails` is fetched

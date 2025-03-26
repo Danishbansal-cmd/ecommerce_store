@@ -49,10 +49,21 @@ export const logoutUser = createAsyncThunk('logoutUser', async () => {
 });
 
 export const checkUser = createAsyncThunk('checkUser', async () => {
-  const response = await axiosInstance.get('/user/checkuser', {
-    withCredentials: true,
-  });
-  return response.data;
+  try {
+    const response = await axiosInstance.get(
+      "/user/checkuser",
+      {
+        withCredentials: true,
+        validateStatus: () => true, // This ensures Axios does NOT throw an error for 400 responses
+      }
+    );
+
+    return (response.status === 200) ? response.data : rejectWithValue(response.data || { message: "Unknown error occurred" }); 
+  } catch (error) {
+    return rejectWithValue(
+      error.response?.data || { message: `Network error, please try again. ${error.message}` }
+    );
+  }
 });
 
 export const getAllUsers = createAsyncThunk('getAllUsers', async () => {
@@ -121,7 +132,7 @@ const authSlice = createSlice({
       state.isLoading = true;
     })
     .addCase(checkUser.fulfilled, (state, action) => {
-      console.log(action, '[Login User] from slice fulfilled')
+      console.log(action, '[Check User] from slice fulfilled')
       state.isLoading = false;
       state.user = action.payload?.data ?? null;
       state.isAuthenticated = action.payload?.data ? true : false;
