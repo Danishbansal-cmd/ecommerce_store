@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axiosInstance from "@/common/axiosInstance";
 
 const initialState = {
     isLoading : true,
@@ -8,28 +9,28 @@ const initialState = {
 }
 
 export const addProduct = createAsyncThunk('addProduct', async (formData) => {
-    const response = await axios.post('http://localhost:5000/api/v1/product/add', formData, {
+    const response = await axiosInstance.post('/product/add', formData, {
         withCredentials : true
     });
     return response.data;
 })
 
 export const getAllProduct = createAsyncThunk('getAllProduct', async () => {
-    const response = await axios.get('http://localhost:5000/api/v1/product/getall', {
+    const response = await axiosInstance.get('/product/getall', {
         withCredentials : true
     });
     return response.data;
 })
 
 export const deleteProduct = createAsyncThunk('deleteProduct', async ({productId}) => {
-    const response = await axios.delete(`http://localhost:5000/api/v1/product/delete/${productId}`);
+    const response = await axiosInstance.delete(`/product/delete/${productId}`);
     return response.data;
 })
 
 export const editProduct = createAsyncThunk('editProduct', async ({formData, productId}) => {
     console.log(formData,'editProduct aysncThunk formData')
     console.log(productId,'editProduct aysncThunk productId')
-    const response = await axios.put(`http://localhost:5000/api/v1/product/update/${productId}`, formData, {
+    const response = await axiosInstance.put(`/product/update/${productId}`, formData, {
         withCredentials : true
     });
     return response.data;

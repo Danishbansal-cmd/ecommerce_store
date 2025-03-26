@@ -21,8 +21,10 @@ const app = express();
 const PORT = process.env.SERVER_PORT || 5000;
 
 const allowedOrigins = [
+    'https://ecommerce-site-danish.netlify.app',
+    'https://ecommerce-site-danish.netlify.app',
     'http://localhost:5173',
-    'http://localhost:5174'];
+    'http://localhost:5174',];
 
 const corsOptions = {
     origin : function(origin, callback){
