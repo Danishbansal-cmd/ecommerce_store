@@ -18,9 +18,13 @@ mongoose.connect('mongodb+srv://danishbansal60:danishbansal60@cluster0.1nn7p.mon
 
 const app = express();
 
-const PORT = process.env.SERVER_PORT;
+const PORT = process.env.SERVER_PORT || 5000;
 
-const allowedOrigins = ['http://localhost:5173','http://localhost:5174','https://ecommerce-site-danish.netlify.app']
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://ecommerce-site-danish.netlify.app'];
+
 app.use(cors({
     origin : function(origin, callback){
         if(allowedOrigins.indexOf(origin) !== -1 || !origin){
@@ -34,6 +38,11 @@ app.use(cors({
     credentials : true
 }));
 
+
+// Handle Preflight Requests
+app.options('*', cors());  // ADD THIS LINE HERE
+
+// middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Parses form data
 app.use(cookieParser());
@@ -41,7 +50,6 @@ app.use(cookieParser());
 app.get('/', (req, res) => {
     res.send('Hello xpress');
 })
-
 
 
 app.use('/api/v1', authRoutes)
