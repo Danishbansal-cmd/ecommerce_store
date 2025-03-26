@@ -20,27 +20,19 @@ const app = express();
 
 const PORT = process.env.SERVER_PORT || 5000;
 
-const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'https://ecommerce-site-danish.netlify.app'];
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://ecommerce-site-danish.netlify.app'); // Allow frontend domain
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
 
-app.use(cors({
-    origin : function(origin, callback){
-        if(allowedOrigins.indexOf(origin) !== -1 || !origin){
-            callback(null, true)
-        }else {
-            callback(new Error('Not allowed, blocked by cors'))
-        }
-    },
-    methods : ['GET','POST','PUT','DELETE'],
-    allowedHeaders : ['Content-Type', 'Authorization'],
-    credentials : true
-}));
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200); // Handle preflight requests
+    }
 
+    next();
+});
 
-// Handle Preflight Requests
-app.options('*', cors());  // ADD THIS LINE HERE
 
 // middlewares
 app.use(express.json());
